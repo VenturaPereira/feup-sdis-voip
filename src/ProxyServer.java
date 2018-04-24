@@ -1,11 +1,13 @@
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.util.HashMap;
 import java.io.IOException;
 
 public class ProxyServer {
 
     private DatagramSocket socket;
+    private HashMap<String, String> contacts;
 
     public static void main(String[] args) throws IOException {
         ProxyServer proxy = new ProxyServer(Integer.parseInt(args[0]));
