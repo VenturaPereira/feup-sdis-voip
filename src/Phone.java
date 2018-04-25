@@ -16,10 +16,10 @@ public class Phone {
         try {
             Phone phone = new Phone(args[0], args[1], Integer.parseInt(args[2]));
             phone.display_connection_info();
-            phone.connect_to_proxy();
+            phone.send("REGISTER");
         }
         catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("\nInvalid arguments!\nUsage: \"java Phone <username> <hostname> <port>\"\n");
+            System.out.println("\nInvalid arguments!\nUsage: \"java Phone <username> <proxy_hostname> <proxy_port>\"\n");
         }
     }
 
@@ -30,13 +30,29 @@ public class Phone {
         this.socket = new DatagramSocket();
     }
 
-    public void connect_to_proxy() throws IOException {
-        InetAddress addr = InetAddress.getByName(this.host_name);
+    public void send(String type) throws IOException {
+        InetAddress addr = InetAddress.getByName(this.host_name); 
+        byte[] msg = null;
 
-        byte[] msg = Message.build_register(this.username, InetAddress.getLocalHost().toString());
+        switch (type) {
+            case "REGISTER":
+                msg = Message.build_register(this.username, InetAddress.getLocalHost().toString());
+                break;
+        
+            default:
+                break;
+        }
+        DatagramPacket message = new DatagramPacket(msg, msg.length, addr, this.port);
+        this.socket.send(message);
+    }
 
-        DatagramPacket handshake = new DatagramPacket(msg, msg.length, addr, this.port);
-        this.socket.send(handshake);
+    public void listen() throws IOException {
+        while (true) {
+            DatagramPacket packet = new DatagramPacket(new byte[512], 512);
+            this.socket.receive(packet);
+
+            System.out.println(new String(packet.getData()));
+        }
     }
     
     public void display_connection_info() {
