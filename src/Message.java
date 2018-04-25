@@ -1,3 +1,6 @@
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.HashMap;
 
 public class Message {
@@ -6,14 +9,27 @@ public class Message {
         return String.format("REGISTER %s %s", username, ip).getBytes();
     }
 
+    
     public static HashMap<String, String> parse_register(byte[] request) {
         HashMap<String, String> result = new HashMap<String, String>();
         String[] tokens = new String(request).split(" ");
-
+        
         result.put("username", tokens[1]);
         result.put("ip", tokens[2]);
-
+        
         return result;
     }
+
+    public static DatagramPacket build_packet(String message, InetAddress addr, int port) {
+        byte[] msg = new String(message).getBytes();
+        return new DatagramPacket(msg, msg.length, addr, port);
+    }
+
+    /*
+    public static void send_packet(DatagramSocket socket, String message, InetAddress addr, int port) {
+        DatagramPacket packet = new DatagramPacket(message, message.length, addr, port);
+        socket.send(packet);
+    }
+    */
 
 }
