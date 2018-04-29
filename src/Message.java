@@ -9,11 +9,14 @@ public class Message {
         return String.format("REGISTER %s %s", username, ip).getBytes();
     }
 
+    public static String get_type(byte[] request) {
+        return new String(request).split(" ")[0];
+    }
     
     public static HashMap<String, String> parse_register(byte[] request) {
         HashMap<String, String> result = new HashMap<String, String>();
         String[] tokens = new String(request).split(" ");
-        
+
         result.put("username", tokens[1]);
         result.put("ip", tokens[2]);
         
