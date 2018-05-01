@@ -44,6 +44,10 @@ public class ProxyServer {
         }
     }
 
+    /**
+     * Monitors requests and sends them to the respective handle methods.
+     * @param request   The datagram packet received from the client.
+     */
     public void request_monitor(DatagramPacket request) throws IOException {
         switch (Message.get_type(request.getData())) {
             case "REGISTER":

@@ -1,12 +1,17 @@
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.UnknownHostException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.lang.ArrayIndexOutOfBoundsException;
 
-public class Phone implements Runnable {
+public class Phone implements PhoneInterface {
 
     private String host_name, username;
     private int port;
@@ -19,7 +24,27 @@ public class Phone implements Runnable {
         this.username = username;
         this.host_name = host_name;
         this.port = port;
+
         this.socket = new DatagramSocket();
+    }
+
+    public void bind_to_registry() {        
+        try {
+            PhoneInterface stub = (PhoneInterface) UnicastRemoteObject.exportObject(this, 0);
+            System.out.println("Phone booted!");
+            LocateRegistry.getRegistry().bind(this.username, stub);
+        }
+        catch (RemoteException | AlreadyBoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public void send_register_request() {
+        System.out.println("Registering request...");
     }
 
     /**
@@ -41,17 +66,7 @@ public class Phone implements Runnable {
         this.socket.send(packet);
     }
     
-    public void display_connection_info() {
-        System.out.format("\nWelcome, %s!\n", this.username);
-        
-        System.out.println("\nSetting up proxy server...");
-        System.out.format("• Proxy hostname: %s\n", this.host_name);
-        System.out.format("• Proxy port: %d\n\n", this.port);
-        System.out.println("Attempting to register on proxy...\n");
-    }
-    
-    @Override
-    public void run() {        
+    public void listen() {        
         while (true) {
             DatagramPacket packet = new DatagramPacket(new byte[512], 512);
 
@@ -66,16 +81,15 @@ public class Phone implements Runnable {
     }
     
     public static void main(String[] args) throws IOException {
+        Phone phone = new Phone(args[0], args[1], Integer.parseInt(args[2]));
+        
         try {
-            Phone phone = new Phone(args[0], args[1], Integer.parseInt(args[2]));
-            Thread thread = new Thread(phone); // Starts reading from socket.
-            thread.start();
-
+            phone.bind_to_registry();
             phone.display_connection_info();
-            phone.send("REGISTER");
         }
         catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("\nInvalid arguments!\nUsage: \"java Phone <username> <proxy_hostname> <proxy_port>\"\n");
         }
+        System.out.println("exiting...");
     }
 }
