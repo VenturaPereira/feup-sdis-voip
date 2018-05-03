@@ -47,11 +47,18 @@ public class Phone implements PhoneInterface {
         System.out.println("Registering request...");
     }
 
-    public void send_invite_request() {
-
-        
-
+    /**
+     * 
+     */
+    @Override
+    public void send_invite_request(String username) throws IOException {
+        InetAddress address = InetAddress.getByName(this.host_name);
+        String message = String.format("INVITE %s", username);
+        DatagramPacket packet = Message.build_packet(message,address, this.port);
+        this.socket.send(packet);
     }
+
+
     /**
      * Sends message to socket.
      */

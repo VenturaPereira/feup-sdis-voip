@@ -47,7 +47,13 @@ public class ProxyServer {
 
     public void get_contact_ip(DatagramPacket request) throws IOException{
 
+        String username = Message.parse_invite(request.getData());
 
+        if(this.contacts.containsKey(username)){
+            this.reply(this.contacts.get(username), request.getAddress(), request.getPort());
+        }else{
+             this.reply("404 NOT FOUND", request.getAddress(), request.getPort());
+        }
 
 
 
@@ -65,7 +71,7 @@ public class ProxyServer {
 
             case "INVITE":
 
-                //send ip back
+                this.get_contact_ip(request);
 
                 break;
         

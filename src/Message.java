@@ -27,6 +27,15 @@ public class Message {
         return result;
     }
 
+     public static String parse_invite(byte[] request) {
+        
+        String[] tokens = new String(request).split(" ");
+
+        return tokens[1];
+    }
+
+    
+
     public static DatagramPacket build_packet(String message, InetAddress addr, int port) {
         byte[] msg = new String(message).getBytes();
         return new DatagramPacket(msg, msg.length, addr, port);
