@@ -9,6 +9,10 @@ public class Message {
         return String.format("REGISTER %s %s", username, ip).getBytes();
     }
 
+    public static byte[] build_invite_server(String username){
+        return String.format("INVITE %s", username).getBytes();
+    }
+
     public static String get_type(byte[] request) {
         return new String(request).split(" ")[0];
     }

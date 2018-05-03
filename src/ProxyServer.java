@@ -44,6 +44,15 @@ public class ProxyServer {
         }
     }
 
+
+    public void get_contact_ip(DatagramPacket request) throws IOException{
+
+
+
+
+
+    }
+
     /**
      * Monitors requests and sends them to the respective handle methods.
      * @param request   The datagram packet received from the client.
@@ -52,6 +61,12 @@ public class ProxyServer {
         switch (Message.get_type(request.getData())) {
             case "REGISTER":
                 this.store_contact(request);
+                break;
+
+            case "INVITE":
+
+                //send ip back
+
                 break;
         
             default:

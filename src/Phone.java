@@ -47,6 +47,11 @@ public class Phone implements PhoneInterface {
         System.out.println("Registering request...");
     }
 
+    public void send_invite_request() {
+
+        
+
+    }
     /**
      * Sends message to socket.
      */
@@ -59,6 +64,7 @@ public class Phone implements PhoneInterface {
                 String message = String.format("REGISTER %s %s", this.username, InetAddress.getLocalHost().toString());
                 packet = Message.build_packet(message, addr, this.port);
                 break;
+    
         
                 default:
                 break;
@@ -85,7 +91,7 @@ public class Phone implements PhoneInterface {
         
         try {
             phone.bind_to_registry();
-            phone.display_connection_info();
+         //  phone.display_connection_info();
         }
         catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("\nInvalid arguments!\nUsage: \"java Phone <username> <proxy_hostname> <proxy_port>\"\n");
