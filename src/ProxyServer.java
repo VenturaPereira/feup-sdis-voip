@@ -38,11 +38,11 @@ public class ProxyServer {
         HashMap<String, String> args = Message.parse_register(request.getData());
 
         if (this.contacts.containsKey(args.get("username"))) {
-            this.reply("403 FORBIDDEN", request.getAddress(), request.getPort());
+            this.reply("FORBIDDEN 403", request.getAddress(), request.getPort());
         } 
         else {
             this.contacts.put(args.get("username"), (args.get("ip") + "/" + args.get("port")).trim());
-            this.reply("200 OK", request.getAddress(), request.getPort());
+            this.reply("SOK 200", request.getAddress(), request.getPort());
         }
     }
 
@@ -55,10 +55,10 @@ public class ProxyServer {
         String username = Message.parse_invite(request.getData()).trim();
      
         if (this.contacts.containsKey(username)) {
-            this.reply(this.contacts.get(username), request.getAddress(), request.getPort());
+            this.reply("SINVITE " + this.contacts.get(username), request.getAddress(), request.getPort());
         }
         else {
-            this.reply("404 NOT FOUND", request.getAddress(), request.getPort());
+            this.reply("NOT_FOUND 404", request.getAddress(), request.getPort());
         }
     }
 

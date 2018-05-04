@@ -48,7 +48,7 @@ public class Phone implements PhoneInterface {
     @Override
     public void send_register_request() {
         try {
-            this.send("REGISTER");
+            this.send(Message.Type.REGISTER);
         }
         catch (Exception e) {
 		    e.printStackTrace();
@@ -70,21 +70,53 @@ public class Phone implements PhoneInterface {
     /**
      * Sends message to socket.
      */
-    public void send(String type) throws IOException {
-        InetAddress addr = InetAddress.getByName(this.host_name); 
+    public void send(Message.Type type) throws IOException {
+        InetAddress addr = InetAddress.getByName(this.host_name);
         DatagramPacket packet = null;
         
         switch (type) {
-            case "REGISTER":
+            case REGISTER:
                 String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().toString(), this.port);
                 packet = Message.build_packet(message, addr, this.port);
                 break;
+
+            case RINGING:
+                packet = Message.build_packet("180 RINGING", addr, port);
+                break;
     
-        
             default:
                 break;
         }
         this.socket.send(packet);
+    }
+
+    /**
+     * Handles received packets on the phone.
+     * @param message   The datagram packet received from either other phone/server.
+     */
+    public void message_monitor(DatagramPacket message) throws IOException {
+        switch (Message.get_type(message.getData())) {
+            
+            case SINVITE:
+                String callee_info = Message.get_callee_ip(message.getData());
+                this.send(Message.Type.INVITE);
+
+            case INVITE:
+                this.send(Message.Type.RINGING);
+                System.out.println("Incoming call!");
+                break;
+
+
+            case RINGING:
+                System.out.println("📞  Ringing...");
+                break;
+
+            case OK:
+                System.out.println("Call accepted!");
+        
+            default:
+                break;
+        }
     }
     
     public void listen() {        
@@ -94,6 +126,7 @@ public class Phone implements PhoneInterface {
             try {
                 this.socket.receive(packet);
                 System.out.println(new String(packet.getData()));
+                this.message_monitor(packet);
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -110,8 +143,7 @@ public class Phone implements PhoneInterface {
         catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("\nInvalid arguments!\nUsage: \"java Phone <username> <proxy_hostname> <proxy_port>\"\n");
         }
-         System.out.println("exiting...");
-         phone.listen();
         
+        phone.listen();   
     }
 }
