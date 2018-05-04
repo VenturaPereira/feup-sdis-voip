@@ -49,7 +49,7 @@ public class Phone implements PhoneInterface {
      */
     @Override
     public void send_register_request() throws IOException, UnknownHostException {
-        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost(), this.socket.getLocalPort());
+        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().getHostAddress(), this.socket.getLocalPort());
         this.send(message, this.proxy_addr, this.proxy_port);
     }
 
@@ -64,6 +64,8 @@ public class Phone implements PhoneInterface {
         String message = String.format("INVITE %s", username);
         this.send(message, this.proxy_addr, this.proxy_port);
     }
+
+    /** PEER COMMUNICATION METHODS */
 
     /**
      * Sends message to socket.
@@ -80,14 +82,17 @@ public class Phone implements PhoneInterface {
     public void message_monitor(DatagramPacket message) throws IOException {
         switch (Message.get_type(message.getData())) {
             
+            case SOK:
+                System.out.println("☁️  Proxy successfully stored this phone's InetAddress!\n   You may now establish voice calls.");
+                break;
+
             case SINVITE:
-                //String callee_info = Message.get_callee_ip(message.getData());
-                //this.send(Message.Type.INVITE);
-                System.out.println("got invite");
+                String[] callee_info = Message.get_callee_info(message.getData());
+                this.send("INVITE", InetAddress.getByName(callee_info[1]), Integer.parseInt(callee_info[2].trim()));
                 break;
 
             case INVITE:
-                //this.send(Message.Type.RINGING);
+                this.send("RINGING", message.getAddress(), message.getPort());
                 System.out.println("Incoming call!");
                 break;
 

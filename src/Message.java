@@ -25,11 +25,11 @@ public class Message {
     }
 
     public static Message.Type get_type(byte[] request) {
-        return Message.Type.valueOf(new String(request).split(" ")[0]);
+        return Message.Type.valueOf(new String(request).trim().split(" ")[0]);
     }
 
-    public static String get_callee_ip(byte[] message) {
-        return new String(message).split(" ")[1];
+    public static String[] get_callee_info(byte[] message) {
+        return new String(message).split(" ");
     }
     
     public static HashMap<String, String> parse_register(byte[] request) {

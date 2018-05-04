@@ -5,7 +5,12 @@ if [ "$1" = "server" ]; then
     java ProxyServer 9000; 
 fi
 
-if [ "$1" = "interface" ]; then 
+if [ "$1" = "phone1" ]; then 
+    clear; 
+    java Phone alice localhost 9000;
+fi
+
+if [ "$1" = "phone2" ]; then 
     clear; 
     java Phone bob localhost 9000;
 fi
