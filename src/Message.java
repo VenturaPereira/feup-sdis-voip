@@ -27,6 +27,7 @@ public class Message {
 
         result.put("username", tokens[1]);
         result.put("ip", tokens[2]);
+        result.put("port", tokens[3]);
         
         return result;
     }

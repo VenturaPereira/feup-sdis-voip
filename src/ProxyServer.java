@@ -41,7 +41,8 @@ public class ProxyServer {
             this.reply("403 FORBIDDEN", request.getAddress(), request.getPort());
         } 
         else {
-            this.contacts.put(args.get("username"), args.get("ip"));
+            this.contacts.put(args.get("username"), args.get("ip") + "|" + args.get("port"));
+            System.out.println(args.get("port"));
             this.reply("200 OK", request.getAddress(), request.getPort());
         }
     }

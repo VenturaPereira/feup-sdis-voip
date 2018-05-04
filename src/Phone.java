@@ -78,7 +78,7 @@ public class Phone implements PhoneInterface {
         switch (type) {
             case "REGISTER":
                 System.out.println("Requestingssdsad");
-                String message = String.format("REGISTER %s %s", this.username, InetAddress.getLocalHost().toString());
+                String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().toString(), this.port);
                 packet = Message.build_packet(message, addr, this.port);
                 break;
     
