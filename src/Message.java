@@ -6,7 +6,13 @@ import java.util.HashMap;
 public class Message {
 
     public enum Type {
-        REGISTER, INVITE
+        REGISTER("REGISTER"), INVITE("INVITE");
+
+        public final String value; 
+
+        private Type(String value) {
+            this.value = value;
+        }
     }
 
     public static byte[] build_register(String username, String ip) {
@@ -17,8 +23,8 @@ public class Message {
         return String.format("INVITE %s", username).getBytes();
     }
 
-    public static String get_type(byte[] request) {
-        return new String(request).split(" ")[0];
+    public static Message.Type get_type(byte[] request) {
+        return Message.Type.valueOf(new String(request).split(" ")[0]);
     }
     
     public static HashMap<String, String> parse_register(byte[] request) {
@@ -41,12 +47,5 @@ public class Message {
         byte[] msg = new String(message).getBytes();
         return new DatagramPacket(msg, msg.length, addr, port);
     }
-
-    /*
-    public static void send_packet(DatagramSocket socket, String message, InetAddress addr, int port) {
-        DatagramPacket packet = new DatagramPacket(message, message.length, addr, port);
-        socket.send(packet);
-    }
-    */
 
 }

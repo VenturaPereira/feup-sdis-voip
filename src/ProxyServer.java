@@ -41,8 +41,7 @@ public class ProxyServer {
             this.reply("403 FORBIDDEN", request.getAddress(), request.getPort());
         } 
         else {
-            this.contacts.put(args.get("username"), args.get("ip") + "|" + args.get("port"));
-            System.out.println(args.get("port"));
+            this.contacts.put(args.get("username"), (args.get("ip") + "/" + args.get("port")).trim());
             this.reply("200 OK", request.getAddress(), request.getPort());
         }
     }
@@ -69,11 +68,11 @@ public class ProxyServer {
      */
     public void request_monitor(DatagramPacket request) throws IOException {
         switch (Message.get_type(request.getData())) {
-            case "REGISTER":
+            case REGISTER:
                 this.store_contact(request);
                 break;
 
-            case "INVITE":
+            case INVITE:
                 this.get_contact_ip(request);
                 break;
         
@@ -104,7 +103,7 @@ public class ProxyServer {
             DatagramPacket packet = new DatagramPacket(new byte[512], 512);
             this.socket.receive(packet);
            
-            System.out.format("📩  [REQUEST] %s\n", new String(packet.getData()));
+            System.out.format("📩  [REQUEST] %s\n", new String(packet.getData()).trim());
             this.request_monitor(packet);
         }
     }
