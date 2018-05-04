@@ -4,6 +4,8 @@ import java.net.DatagramPacket;
 import java.net.SocketException;
 import java.util.HashMap;
 import java.io.IOException;
+import java.util.*;
+import java.io.*;
 
 public class ProxyServer {
 
@@ -47,8 +49,8 @@ public class ProxyServer {
 
     public void get_contact_ip(DatagramPacket request) throws IOException{
 
-        String username = Message.parse_invite(request.getData());
-
+        String username = Message.parse_invite(request.getData()).trim();
+     
         if(this.contacts.containsKey(username)){
             this.reply(this.contacts.get(username), request.getAddress(), request.getPort());
         }else{
@@ -101,6 +103,8 @@ public class ProxyServer {
         while (true) {
             DatagramPacket packet = new DatagramPacket(new byte[512], 512);
             this.socket.receive(packet);
+           
+
             System.out.format("📩  [REQUEST] %s\n", new String(packet.getData()));
 
             this.request_monitor(packet);

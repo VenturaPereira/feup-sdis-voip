@@ -6,7 +6,7 @@ import java.rmi.registry.Registry;
 public class Client {
 
     public static void main(String[] args) {
-
+           
             String command = args[2];
 
         try {
@@ -17,7 +17,7 @@ public class Client {
             switch(command){
 
                 case "boot":
-
+                    System.out.println("chosen");
                     stub.send_register_request();
 
                     break;

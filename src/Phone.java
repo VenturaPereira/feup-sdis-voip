@@ -44,7 +44,13 @@ public class Phone implements PhoneInterface {
      */
     @Override
     public void send_register_request() {
-        System.out.println("Registering request...");
+        try{
+            System.out.println("About to send request");
+       this.send("REGISTER");
+        }catch(Exception e){
+             System.err.println("App exception: " + e.toString());
+				        e.printStackTrace();
+        }
     }
 
     /**
@@ -68,6 +74,7 @@ public class Phone implements PhoneInterface {
         
         switch (type) {
             case "REGISTER":
+                System.out.println("Requestingssdsad");
                 String message = String.format("REGISTER %s %s", this.username, InetAddress.getLocalHost().toString());
                 packet = Message.build_packet(message, addr, this.port);
                 break;
@@ -77,10 +84,12 @@ public class Phone implements PhoneInterface {
                 break;
         }
         this.socket.send(packet);
+        System.out.println("sent  " + packet.getData());
     }
     
     public void listen() {        
         while (true) {
+            System.out.println("hi");
             DatagramPacket packet = new DatagramPacket(new byte[512], 512);
 
             try {
@@ -103,6 +112,8 @@ public class Phone implements PhoneInterface {
         catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("\nInvalid arguments!\nUsage: \"java Phone <username> <proxy_hostname> <proxy_port>\"\n");
         }
-        System.out.println("exiting...");
+         System.out.println("exiting...");
+         phone.listen();
+        
     }
 }
