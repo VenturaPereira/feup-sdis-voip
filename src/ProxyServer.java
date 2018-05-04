@@ -41,8 +41,17 @@ public class ProxyServer {
             this.reply("FORBIDDEN 403", request.getAddress(), request.getPort());
         } 
         else {
+
             this.contacts.put(args.get("username"), (args.get("ip") + " " + args.get("port")).trim());
             this.reply("SOK 200", request.getAddress(), request.getPort());
+          
+            if (args.containsKey("password")) {
+                this.reply("200 OK", request.getAddress(), request.getPort());
+            }
+
+            else {
+                this.reply("401 Unauthorized", request.getAddress(), request.getPort());
+            }
         }
     }
 
