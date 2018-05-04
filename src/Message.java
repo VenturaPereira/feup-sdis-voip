@@ -5,6 +5,10 @@ import java.util.HashMap;
 
 public class Message {
 
+    public enum Type {
+        REGISTER, INVITE
+    }
+
     public static byte[] build_register(String username, String ip) {
         return String.format("REGISTER %s %s", username, ip).getBytes();
     }
@@ -27,14 +31,10 @@ public class Message {
         return result;
     }
 
-     public static String parse_invite(byte[] request) {
-        
+    public static String parse_invite(byte[] request) {
         String[] tokens = new String(request).split(" ");
-
         return tokens[1];
     }
-
-    
 
     public static DatagramPacket build_packet(String message, InetAddress addr, int port) {
         byte[] msg = new String(message).getBytes();

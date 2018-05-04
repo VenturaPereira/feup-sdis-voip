@@ -28,6 +28,9 @@ public class Phone implements PhoneInterface {
         this.socket = new DatagramSocket();
     }
 
+    /**
+     * 
+     */
     public void bind_to_registry() {        
         try {
             PhoneInterface stub = (PhoneInterface) UnicastRemoteObject.exportObject(this, 0);
@@ -44,12 +47,12 @@ public class Phone implements PhoneInterface {
      */
     @Override
     public void send_register_request() {
-        try{
+        try {
             System.out.println("About to send request");
-       this.send("REGISTER");
-        }catch(Exception e){
-             System.err.println("App exception: " + e.toString());
-				        e.printStackTrace();
+            this.send("REGISTER");
+        }
+        catch (Exception e) {
+		    e.printStackTrace();
         }
     }
 
@@ -80,7 +83,7 @@ public class Phone implements PhoneInterface {
                 break;
     
         
-                default:
+            default:
                 break;
         }
         this.socket.send(packet);
