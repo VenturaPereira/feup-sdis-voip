@@ -41,24 +41,26 @@ public class ProxyServer {
             this.reply("403 FORBIDDEN", request.getAddress(), request.getPort());
         } 
         else {
-            this.contacts.put(args.get("username"), args.get("ip"));
+            this.contacts.put(args.get("username"), args.get("ip") + "|" + args.get("port"));
+            System.out.println(args.get("port"));
             this.reply("200 OK", request.getAddress(), request.getPort());
         }
     }
 
-
+    /**
+     * Sends a reply to the caller containing the callee's IP.
+     * Server replies with 404 NOT FOUND code when username cannot be matched on the registry.
+     * @param request   The datagram packet received from the client.
+     */
     public void get_contact_ip(DatagramPacket request) throws IOException{
-
         String username = Message.parse_invite(request.getData()).trim();
      
-        if(this.contacts.containsKey(username)){
+        if (this.contacts.containsKey(username)) {
             this.reply(this.contacts.get(username), request.getAddress(), request.getPort());
-        }else{
-             this.reply("404 NOT FOUND", request.getAddress(), request.getPort());
         }
-
-
-
+        else {
+            this.reply("404 NOT FOUND", request.getAddress(), request.getPort());
+        }
     }
 
     /**
@@ -72,9 +74,7 @@ public class ProxyServer {
                 break;
 
             case "INVITE":
-
                 this.get_contact_ip(request);
-
                 break;
         
             default:
@@ -91,7 +91,7 @@ public class ProxyServer {
     public void reply(String message, InetAddress addr, int port) throws IOException {
         DatagramPacket packet = Message.build_packet(message, addr, port);
         this.socket.send(packet);
-        System.out.format("📢  [REPLY] '%s' sent to %s, %d\n", message, addr.getHostAddress(), port);
+        System.out.format("📢  [REPLY] '%s' sent to %s, %d\n\n", message, addr.getHostAddress(), port);
     }
 
     /**
@@ -104,9 +104,7 @@ public class ProxyServer {
             DatagramPacket packet = new DatagramPacket(new byte[512], 512);
             this.socket.receive(packet);
            
-
             System.out.format("📩  [REQUEST] %s\n", new String(packet.getData()));
-
             this.request_monitor(packet);
         }
     }
