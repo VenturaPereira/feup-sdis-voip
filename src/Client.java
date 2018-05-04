@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -18,7 +20,12 @@ public class Client {
 
                 case "boot":
                     System.out.println("chosen");
-                    stub.send_register_request();
+                    try {
+                        stub.send_register_request();
+                    }
+                    catch(IOException e) {
+                        e.printStackTrace();
+                    }
 
                     break;
 

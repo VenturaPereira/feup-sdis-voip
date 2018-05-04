@@ -13,17 +13,18 @@ import java.lang.ArrayIndexOutOfBoundsException;
 
 public class Phone implements PhoneInterface {
 
-    private String host_name, username;
-    private int port;
+    private String username;
+    private int proxy_port;
+    private InetAddress proxy_addr;
     private DatagramSocket socket;
 
     /**
      * Phone constructor.
      */
-    public Phone(String username, String host_name, int port) throws SocketException {
+    public Phone(String username, String proxy_host_name, int proxy_port) throws SocketException, UnknownHostException {
         this.username = username;
-        this.host_name = host_name;
-        this.port = port;
+        this.proxy_addr = InetAddress.getByName(proxy_host_name);
+        this.proxy_port = proxy_port;
 
         this.socket = new DatagramSocket();
     }
@@ -43,48 +44,69 @@ public class Phone implements PhoneInterface {
     }
 
     /**
-     * 
+     * A RMI-called method.
+     * TODO: Lacking documentation.
      */
     @Override
-    public void send_register_request() {
-        try {
-            this.send("REGISTER");
-        }
-        catch (Exception e) {
-		    e.printStackTrace();
-        }
+    public void send_register_request() throws IOException, UnknownHostException {
+        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().getHostAddress(), this.socket.getLocalPort());
+        this.send(message, this.proxy_addr, this.proxy_port);
     }
 
     /**
-     * 
+     * A RMI-called method.
+     * When a user wishes to call other user, a INVITE request is sent to the server.
+     * The server should reply with the callee's stored IP and port.
+     * @param username  Callee's username.
      */
     @Override
     public void send_invite_request(String username) throws IOException {
-        InetAddress address = InetAddress.getByName(this.host_name);
         String message = String.format("INVITE %s", username);
-        DatagramPacket packet = Message.build_packet(message,address, this.port);
-        this.socket.send(packet);
+        this.send(message, this.proxy_addr, this.proxy_port);
     }
 
+    /** PEER COMMUNICATION METHODS */
 
     /**
      * Sends message to socket.
      */
-    public void send(String type) throws IOException {
-        InetAddress addr = InetAddress.getByName(this.host_name); 
-        DatagramPacket packet = null;
-        
-        switch (type) {
-            case "REGISTER":
-                String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().toString(), this.port);
-                packet = Message.build_packet(message, addr, this.port);
+    public void send(String message, InetAddress addr, int port) throws IOException {
+        DatagramPacket packet = Message.build_packet(message, addr, port);
+        this.socket.send(packet);
+    }
+
+    /**
+     * Handles received packets on the phone.
+     * @param message   The datagram packet received from either other phone/server.
+     */
+    public void message_monitor(DatagramPacket message) throws IOException {
+        switch (Message.get_type(message.getData())) {
+            
+            case SOK:
+                System.out.println("☁️  Proxy successfully stored this phone's InetAddress!\n   You may now establish voice calls.");
                 break;
-    
+
+            case SINVITE:
+                String[] callee_info = Message.get_callee_info(message.getData());
+                this.send("INVITE", InetAddress.getByName(callee_info[1]), Integer.parseInt(callee_info[2].trim()));
+                break;
+
+            case INVITE:
+                this.send("RINGING", message.getAddress(), message.getPort());
+                System.out.println("Incoming call!");
+                break;
+
+            case RINGING:
+                System.out.println("📞  Ringing...");
+                break;
+
+            case OK:
+                System.out.println("Call accepted!");
+                break;
         
             default:
                 break;
         }
-        this.socket.send(packet);
     }
     
     public void listen() {        
@@ -94,6 +116,7 @@ public class Phone implements PhoneInterface {
             try {
                 this.socket.receive(packet);
                 System.out.println(new String(packet.getData()));
+                this.message_monitor(packet);
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -110,8 +133,7 @@ public class Phone implements PhoneInterface {
         catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("\nInvalid arguments!\nUsage: \"java Phone <username> <proxy_hostname> <proxy_port>\"\n");
         }
-         System.out.println("exiting...");
-         phone.listen();
         
+        phone.listen();   
     }
 }

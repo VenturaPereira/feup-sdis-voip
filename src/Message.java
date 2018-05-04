@@ -6,7 +6,8 @@ import java.util.HashMap;
 public class Message {
 
     public enum Type {
-        REGISTER("REGISTER"), INVITE("INVITE");
+        REGISTER("REGISTER"), INVITE("INVITE"), RINGING("RINGING"), SINVITE("SINVITE"),
+        SOK("SOK"), OK("OK"), ACK("ACK"), FORBIDDEN("FORBIDDEN"), NOT_FOUND("NOT_FOUND");
 
         public final String value; 
 
@@ -24,7 +25,11 @@ public class Message {
     }
 
     public static Message.Type get_type(byte[] request) {
-        return Message.Type.valueOf(new String(request).split(" ")[0]);
+        return Message.Type.valueOf(new String(request).trim().split(" ")[0]);
+    }
+
+    public static String[] get_callee_info(byte[] message) {
+        return new String(message).split(" ");
     }
     
     public static HashMap<String, String> parse_register(byte[] request) {
