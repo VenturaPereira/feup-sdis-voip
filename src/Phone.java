@@ -13,17 +13,18 @@ import java.lang.ArrayIndexOutOfBoundsException;
 
 public class Phone implements PhoneInterface {
 
-    private String host_name, username;
-    private int port;
+    private String username;
+    private int proxy_port;
+    private InetAddress proxy_addr;
     private DatagramSocket socket;
 
     /**
      * Phone constructor.
      */
-    public Phone(String username, String host_name, int port) throws SocketException {
+    public Phone(String username, String proxy_host_name, int proxy_port) throws SocketException, UnknownHostException {
         this.username = username;
-        this.host_name = host_name;
-        this.port = port;
+        this.proxy_addr = InetAddress.getByName(proxy_host_name);
+        this.proxy_port = proxy_port;
 
         this.socket = new DatagramSocket();
     }
@@ -43,50 +44,32 @@ public class Phone implements PhoneInterface {
     }
 
     /**
-     * 
+     * A RMI-called method.
+     * TODO: Lacking documentation.
      */
     @Override
-    public void send_register_request() {
-        try {
-            this.send(Message.Type.REGISTER);
-        }
-        catch (Exception e) {
-		    e.printStackTrace();
-        }
+    public void send_register_request() throws IOException, UnknownHostException {
+        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost(), this.socket.getLocalPort());
+        this.send(message, this.proxy_addr, this.proxy_port);
     }
 
     /**
-     * 
+     * A RMI-called method.
+     * When a user wishes to call other user, a INVITE request is sent to the server.
+     * The server should reply with the callee's stored IP and port.
+     * @param username  Callee's username.
      */
     @Override
     public void send_invite_request(String username) throws IOException {
-        InetAddress address = InetAddress.getByName(this.host_name);
         String message = String.format("INVITE %s", username);
-        DatagramPacket packet = Message.build_packet(message,address, this.port);
-        this.socket.send(packet);
+        this.send(message, this.proxy_addr, this.proxy_port);
     }
-
 
     /**
      * Sends message to socket.
      */
-    public void send(Message.Type type) throws IOException {
-        InetAddress addr = InetAddress.getByName(this.host_name);
-        DatagramPacket packet = null;
-        
-        switch (type) {
-            case REGISTER:
-                String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().toString(), this.port);
-                packet = Message.build_packet(message, addr, this.port);
-                break;
-
-            case RINGING:
-                packet = Message.build_packet("180 RINGING", addr, port);
-                break;
-    
-            default:
-                break;
-        }
+    public void send(String message, InetAddress addr, int port) throws IOException {
+        DatagramPacket packet = Message.build_packet(message, addr, port);
         this.socket.send(packet);
     }
 
@@ -98,14 +81,15 @@ public class Phone implements PhoneInterface {
         switch (Message.get_type(message.getData())) {
             
             case SINVITE:
-                String callee_info = Message.get_callee_ip(message.getData());
-                this.send(Message.Type.INVITE);
-
-            case INVITE:
-                this.send(Message.Type.RINGING);
-                System.out.println("Incoming call!");
+                //String callee_info = Message.get_callee_ip(message.getData());
+                //this.send(Message.Type.INVITE);
+                System.out.println("got invite");
                 break;
 
+            case INVITE:
+                //this.send(Message.Type.RINGING);
+                System.out.println("Incoming call!");
+                break;
 
             case RINGING:
                 System.out.println("📞  Ringing...");
@@ -113,6 +97,7 @@ public class Phone implements PhoneInterface {
 
             case OK:
                 System.out.println("Call accepted!");
+                break;
         
             default:
                 break;
