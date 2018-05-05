@@ -39,6 +39,16 @@ public class Client {
                     }
                     break;
 
+                case "reject":
+                    try{    
+                        stub.reject_received_call(args[3]);
+                    }catch(Exception e){
+                        System.err.println("App exception: " + e.toString());
+                        e.printStackTrace();
+                    }
+                    break;
+                    
+
                 default:
                     break;
 
