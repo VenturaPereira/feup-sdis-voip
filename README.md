@@ -7,5 +7,6 @@ Development of a VoIP application
 - [ ] One user may call other (which is registered) without itself registering;
 - [ ] Place calls on hold by accepting other calls while one is ongoing;
 - [x] Cancel registration by sending another REGISTER request;
+- [ ] Lacking ACK from Alice after receiving ACCEPT from Bob, as described in RFC 3665;
 - [ ] Tidy terminal mess (maybe log the packets instead of printing them);
 - [ ] Tidy application interface (it's still kinda counter-intuitive), by running an input loop.

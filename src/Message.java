@@ -5,6 +5,9 @@ import java.util.HashMap;
 
 public class Message {
 
+    /**
+     * Message type enum.
+     */
     public enum Type {
         REGISTER("REGISTER"), INVITE("INVITE"), RINGING("RINGING"), SINVITE("SINVITE"),
         SOK("SOK"), OK("OK"), ACK("ACK"), UNREGISTERED("UNREGISTERED"), NOT_FOUND("NOT_FOUND"),
@@ -17,22 +20,27 @@ public class Message {
         }
     }
 
-    public static byte[] build_register(String username, String ip) {
-        return String.format("REGISTER %s %s", username, ip).getBytes();
-    }
-
-    public static byte[] build_invite_server(String username){
-        return String.format("INVITE %s", username).getBytes();
-    }
-
+    /**
+     * Returns the message type of received packet.
+     * @param request   The received packet.
+     */
     public static Message.Type get_type(byte[] request) {
         return Message.Type.valueOf(new String(request).trim().split(" ")[0]);
     }
 
+    /**
+     * Returns a specific parameter encoded on the packet.
+     * @param message   The message to split.
+     * @param index     Specific index of parameter to extract.
+     */
     public static String get_info(byte[] message, int index) {
         return new String(message).trim().split(" ")[index];
     }
 
+    /**
+     * Returns an array of parameters encoded on the packet.
+     * @param message   The message to split.
+     */
     public static String[] get_callee_info(byte[] message) {
         return new String(message).trim().split(" ");
     }
@@ -50,7 +58,7 @@ public class Message {
 
     public static String parse_invite(byte[] request) {
         String[] tokens = new String(request).split(" ");
-        return tokens[1];
+        return tokens[1].trim();
     }
 
     public static DatagramPacket build_packet(String message, InetAddress addr, int port) {

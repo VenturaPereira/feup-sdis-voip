@@ -58,7 +58,7 @@ public class ProxyServer {
      * @param request   The datagram packet received from the client.
      */
     public void get_contact_ip(DatagramPacket request) throws IOException{
-        String username = Message.parse_invite(request.getData()).trim();
+        String username = Message.parse_invite(request.getData());
      
         if (this.contacts.containsKey(username)) {
             this.send("SINVITE " + this.contacts.get(username), request.getAddress(), request.getPort());
