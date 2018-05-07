@@ -22,6 +22,7 @@ public class Phone implements PhoneInterface {
     private DatagramSocket socket;
 
     private ArrayList<DatagramPacket> incoming_calls;
+    private ArrayList<DatagramPacket> ongoing_calls;
 
     /**
      * Phone constructor.
@@ -30,7 +31,9 @@ public class Phone implements PhoneInterface {
         this.username = username;
         this.proxy_addr = InetAddress.getByName(proxy_host_name);
         this.proxy_port = proxy_port;
+
         this.incoming_calls = new ArrayList<DatagramPacket>();
+        this.ongoing_calls = new ArrayList<DatagramPacket>();
 
         this.socket = new DatagramSocket();
     }
@@ -74,6 +77,28 @@ public class Phone implements PhoneInterface {
     }
 
     /**
+     * This is a RMI-called method only.
+     * TODO: Write documentation.
+     */
+    @Override
+    public void accept_received_call(String username) throws RemoteException, IOException {
+        Optional<DatagramPacket> match = this.incoming_calls.stream().filter(x -> Message.get_info(x.getData(), SPEAKER_INDEX).equals(username)).findFirst();
+        
+        if (match.isPresent()) {
+            String message = String.format("ACCEPT %s", this.username);
+            this.send(message, match.get().getAddress(), match.get().getPort());
+
+            this.ongoing_calls.add(match.get());        // Adds new ongoing call.
+            this.incoming_calls.remove(match.get());    // Eliminates incoming call.
+
+            System.out.format("\n✅  Accepted incoming call from '%s'. Connecting...\n\n", username);
+        }
+        else {
+            System.out.format("\n⚠️  User '%s' isn't calling you!\n\n", username);
+        }
+    }
+
+    /**
      * A RMI-called method.
      * Rejects a provided user's call.
      * TODO: Elaborate on documentation.
@@ -90,7 +115,7 @@ public class Phone implements PhoneInterface {
             System.out.format("\n⚠️  You have rejected an incoming call from '%s'.\n\n", username);
         } 
         else {
-            System.out.println("no incoming call");
+            System.out.println("\n⚠️  No incoming call to reject!\n\n");
         }
     }
 
@@ -116,16 +141,28 @@ public class Phone implements PhoneInterface {
         
         switch (Message.get_type(message.getData())) {
 
+            // Triggered when the user attempts to register on the proxy without credentials or with faulty hashing.
             case UNAUTHORIZED:
                 System.out.println("\n⚠️  Proxy rejected REGISTER request.\n   This is likely due to lack of password hashing.\n");
                 break;
 
+            // Triggered when the user had already bound their credentials on the proxy server.
+            case FORBIDDEN:
+                System.out.println("\n⚠️  The proxy server had already registered your credentials.\n   You may establish voice calls.\n");
+                break;
+
+            // Triggered when the callee accepts your ongoing call.
+            case ACCEPT:
+                System.out.format("\n✅  Your call has been accepted! Connecting to '%s'...\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
+                break;
+
+            // Triggered when the user's ongoing phone call attempt has been rejected by the callee.
             case REJECT:
                 System.out.format("\n⚠️  Your call was rejected. Looks like '%s' is busy.\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
                 break;
 
             case SOK:
-                System.out.println("\n✅  Proxy successfully stored this phone's InetAddress!\n   You may now establish voice calls.\n");
+                System.out.println("\n✅  Proxy successfully stored this phone's IP address!\n   You may now establish voice calls.\n");
                 break;
 
             case SINVITE:

@@ -47,7 +47,15 @@ public class Client {
                         e.printStackTrace();
                     }
                     break;
-                    
+
+                case "accept":
+                    try {
+                        stub.accept_received_call(args[3]);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
 
                 default:
                     break;
