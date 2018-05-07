@@ -6,5 +6,6 @@ Development of a VoIP application
 - [ ] Implement initial REGISTER rejection and provide challenge for credentials;
 - [ ] One user may call other (which is registered) without itself registering;
 - [ ] Place calls on hold by accepting other calls while one is ongoing;
+- [x] Cancel registration by sending another REGISTER request;
 - [ ] Tidy terminal mess (maybe log the packets instead of printing them);
 - [ ] Tidy application interface (it's still kinda counter-intuitive), by running an input loop.

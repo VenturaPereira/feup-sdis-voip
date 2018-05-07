@@ -146,11 +146,6 @@ public class Phone implements PhoneInterface {
                 System.out.println("\n⚠️  Proxy rejected REGISTER request.\n   This is likely due to lack of password hashing.\n");
                 break;
 
-            // Triggered when the user had already bound their credentials on the proxy server.
-            case FORBIDDEN:
-                System.out.println("\n⚠️  The proxy server had already registered your credentials.\n   You may establish voice calls.\n");
-                break;
-
             // Triggered when the callee accepts your ongoing call.
             case ACCEPT:
                 System.out.format("\n✅  Your call has been accepted! Connecting to '%s'...\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
@@ -161,6 +156,10 @@ public class Phone implements PhoneInterface {
                 System.out.format("\n⚠️  Your call was rejected. Looks like '%s' is busy.\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
                 break;
 
+            case UNREGISTERED:
+                System.out.println("\n⚠️  Proxy unregistered this phone's IP address!\n   In order to use VoIP functions, please REGISTER your phone.\n");
+                break;
+            
             case SOK:
                 System.out.println("\n✅  Proxy successfully stored this phone's IP address!\n   You may now establish voice calls.\n");
                 break;

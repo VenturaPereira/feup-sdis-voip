@@ -39,7 +39,8 @@ public class ProxyServer {
         HashMap<String, String> args = Message.parse_register(request.getData());
 
         if (this.contacts.containsKey(args.get("username"))) {
-            this.send("FORBIDDEN 403", request.getAddress(), request.getPort());
+            this.contacts.remove(args.get("username"));
+            this.send("UNREGISTERED 200", request.getAddress(), request.getPort());
         }
         else if (!args.containsKey("password")) {
             // TODO: Add MD5 on challenge.

@@ -7,7 +7,7 @@ public class Message {
 
     public enum Type {
         REGISTER("REGISTER"), INVITE("INVITE"), RINGING("RINGING"), SINVITE("SINVITE"),
-        SOK("SOK"), OK("OK"), ACK("ACK"), FORBIDDEN("FORBIDDEN"), NOT_FOUND("NOT_FOUND"),
+        SOK("SOK"), OK("OK"), ACK("ACK"), UNREGISTERED("UNREGISTERED"), NOT_FOUND("NOT_FOUND"),
         UNAUTHORIZED("UNAUTHORIZED"), ACCEPT("ACCEPT"), REJECT("REJECT");
 
         public final String value; 
