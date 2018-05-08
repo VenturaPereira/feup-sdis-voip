@@ -4,45 +4,55 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 
 public class Voice {
     
-    TargetDataLine line;
-    AudioFormat format;
+    private static final float SAMPLE_RATE = 8000.0f;
+    private static final int CHUNK_SIZE = 1024, SAMPLE_SIZE = 16, CHANNEL_MONO = 1, CHANNEL_STEREO = 2;
+
+    private TargetDataLine microphone;
+    private AudioFormat format;
 
     public Voice() {
+        this.format = new AudioFormat(SAMPLE_RATE, SAMPLE_SIZE, CHANNEL_MONO, true, true);
     }
 
-    public void setup_target_data_line() {
-        DataLine.Info info = new DataLine.Info(TargetDataLine.class, this.format);   // Format is an AudioFormat object.
-
-        if (!AudioSystem.isLineSupported(info)) {
-            // TODO: Handle error.
-        }
-
-        try {
-            this.line = (TargetDataLine) AudioSystem.getLine(info);
-            this.line.open(format);
-        } 
-        catch (LineUnavailableException exception) {
-            exception.printStackTrace();
-        }
-
+    public void open_mic_line() throws LineUnavailableException {
+        this.microphone = AudioSystem.getTargetDataLine(this.format);
+        DataLine.Info info = new DataLine.Info(TargetDataLine.class, this.format);
+        
+        this.microphone = (TargetDataLine) AudioSystem.getLine(info);
+        this.microphone.open();
     }
 
-    public void record_audio() {
+    public void rec_mic_line() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte[] data = new byte[this.line.getBufferSize() / 5];
+        byte[] data = new byte[this.microphone.getBufferSize() / 5];
 
-        this.line.start();  // Begin audio capture.
+        this.microphone.start();  // Begin audio capture.
+    }
 
-        int num_read = this.line.read(data, 0, data.length);
-        out.write(data, 0, num_read);
+    public void select_input_device() {
+        Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
+
+        for (Mixer.Info info : mixer_info) {
+            System.out.println(info.getName());
+        }
     }
 
 
     public static void main(String[] args) {
+        Voice voice = new Voice();
+        
+        try {
+            voice.select_input_device();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
