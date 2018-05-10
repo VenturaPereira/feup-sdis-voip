@@ -12,8 +12,6 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.Port.Info;
 
-import javafx.util.Pair;
-
 public class Voice {
     
     private static final float SAMPLE_RATE = 8000.0f;
@@ -64,7 +62,7 @@ public class Voice {
     /**
      * 
      */
-    public Pair<Mixer, Mixer> select_devices() throws LineUnavailableException {
+    public Mixer select_mic_device() throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
         
         for (int i = 0; i < mixer_info.length; i++) {
@@ -75,16 +73,22 @@ public class Voice {
         } 
         
         // TODO: Make input selection.
-        return new Pair<>(AudioSystem.getMixer(mixer_info[9]), AudioSystem.getMixer(mixer_info[5]));
+        return AudioSystem.getMixer(mixer_info[5]);
+    }
+
+    public Mixer select_speaker_device() throws LineUnavailableException {
+        Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
+        return AudioSystem.getMixer(mixer_info[3]);
     }
 
     public static void main(String[] args) {
         Voice voice = new Voice();
         
         try {
-            Pair<Mixer, Mixer> devices = voice.select_devices();
+            Mixer mic_mixer = voice.select_mic_device();
+            Mixer speaker_mixer = voice.select_speaker_device();
 
-            voice.open_lines(devices.getKey(), devices.getValue());
+            voice.open_lines(mic_mixer, speaker_mixer);
             voice.rec_mic_line();
         }
         catch (Exception e) {
