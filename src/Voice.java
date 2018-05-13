@@ -62,17 +62,30 @@ public class Voice {
     /**
      * 
      */
+    public void display_devices(Class<?> line_type) throws LineUnavailableException {
+        Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
+
+        for (int i = 0; i < mixer_info.length; i++) {
+            Mixer mixer = AudioSystem.getMixer(mixer_info[i]);
+            Line.Info[] line_infos;
+
+            if (line_type.equals(TargetDataLine.class)) line_infos = mixer.getTargetLineInfo();
+            else line_infos = mixer.getSourceLineInfo();
+
+            if (line_infos.length >= 1 && line_infos[0].getLineClass().equals(line_type))
+                System.out.format("(%d)\t%s\n", i+1, mixer_info[i].getName());
+        }
+    }
+
+
+
+
+
+    /**
+     * 
+     */
     public Mixer select_mic_device() throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
-        
-        for (int i = 0; i < mixer_info.length; i++) {
-            System.out.format("%d. %s\n", i+1, mixer_info[i].getName());
-
-            //Mixer m = AudioSystem.getMixer(mixer_info[i]);
-            //Line.Info[] lines = m.getTargetLineInfo();
-        } 
-        
-        // TODO: Make input selection.
         return AudioSystem.getMixer(mixer_info[5]);
     }
 
@@ -85,11 +98,12 @@ public class Voice {
         Voice voice = new Voice();
         
         try {
-            Mixer mic_mixer = voice.select_mic_device();
-            Mixer speaker_mixer = voice.select_speaker_device();
+            voice.display_devices(TargetDataLine.class);
+            //Mixer mic_mixer = voice.select_mic_device();
+            //Mixer speaker_mixer = voice.select_speaker_device();
 
-            voice.open_lines(mic_mixer, speaker_mixer);
-            voice.rec_mic_line();
+            //voice.open_lines(mic_mixer, speaker_mixer);
+            //voice.rec_mic_line();
         }
         catch (Exception e) {
             e.printStackTrace();
