@@ -75,7 +75,7 @@ public class Voice {
         } 
         
         // TODO: Make input selection.
-        return new Pair<>(AudioSystem.getMixer(mixer_info[9]), AudioSystem.getMixer(mixer_info[5]));
+        return new Pair<>(AudioSystem.getMixer(mixer_info[4]), AudioSystem.getMixer(mixer_info[1]));
     }
 
     public static void main(String[] args) {
