@@ -24,25 +24,32 @@ import javax.sound.sampled.LineUnavailableException;
 
 
 
-public class ReceiveTest {
+public class ReceiveTest implements Runnable{
 
     AudioInputStream audioInputStream;
     static AudioInputStream ais;
     static AudioFormat format;
     static boolean status = true;
-    static int port = 9000;
+    static int port = 9001;
     static float sampleRate = 8000.0f;
+    private int out_device;
 
     static DataLine.Info dataLineInfo;
     static SourceDataLine sourceDataLine;
 
-    public static void main(String args[]) throws Exception 
+
+    public ReceiveTest(int out_device){
+        this.out_device=out_device;
+
+    }
+    
+    public void run()
     {
         try{
         System.out.println("Server started at port:"+port);
-            
+        try{    
         DatagramSocket serverSocket = new DatagramSocket(port);
- 
+        
 
         byte[] receiveData = new byte[1024];
 
@@ -51,7 +58,7 @@ public class ReceiveTest {
         format = new AudioFormat(sampleRate, 16, 2, true, true);
         dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
 
-        Mixer mixer = AudioSystem.getMixer(mixer_info[5]);
+        Mixer mixer = AudioSystem.getMixer(mixer_info[this.out_device]);
         sourceDataLine = (SourceDataLine) mixer.getLine(dataLineInfo);
         sourceDataLine.open(format);
                         System.out.println("hum");
@@ -77,6 +84,10 @@ public class ReceiveTest {
         }catch(LineUnavailableException e){
             e.printStackTrace();
     }
+
+    }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static void toSpeaker(byte soundbytes[]) {

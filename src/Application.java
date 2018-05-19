@@ -57,7 +57,7 @@ public class Application {
      */
     public void run_first_time_setup() throws IOException, LineUnavailableException {
         this.properties = new Properties();
-        Voice voice = new Voice();
+       
 
         Scanner scanner = new Scanner(System.in);
 
@@ -67,11 +67,11 @@ public class Application {
         System.out.format("Username: ");
         properties.setProperty("USERNAME", scanner.nextLine());
         
-        voice.display_devices(TargetDataLine.class);
+        Voice.display_devices(TargetDataLine.class);
         System.out.format("Input device: ");
         properties.setProperty("DEFAULT_INPUT_DEVICE", scanner.nextLine());
         
-        voice.display_devices(SourceDataLine.class);
+        Voice.display_devices(SourceDataLine.class);
         System.out.format("Output device: ");
         properties.setProperty("DEFAULT_OUTPUT_DEVICE", scanner.nextLine());
 

@@ -19,7 +19,7 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.Port.Info;
 
-public class Voice {
+public class Voice implements Runnable {
     
     private static final float SAMPLE_RATE = 8000.0f;
     private static final int CHUNK_SIZE = 1024, SAMPLE_SIZE = 16, CHANNEL_MONO = 1, CHANNEL_STEREO = 2;
@@ -29,11 +29,15 @@ public class Voice {
     private AudioFormat format;
     private InetAddress addr;
     private DatagramPacket dgp;
+    private int in_device;
+
 
     /**
      * Voice class constructor.
      */
-    public Voice() {
+    public Voice(int in_device, InetAddress addr) {
+        this.addr=addr;
+        this.in_device = in_device;
         this.format = new AudioFormat(SAMPLE_RATE, SAMPLE_SIZE, CHANNEL_STEREO, true, true);
     }
 
@@ -45,9 +49,7 @@ public class Voice {
         this.microphone = (TargetDataLine) mic_mixer.getLine(out_info);
         this.microphone.open(this.format);
 
-    /*    DataLine.Info in_info = new DataLine.Info(SourceDataLine.class, this.format);
-        this.speakers = (SourceDataLine) speakers_mixer.getLine(in_info);
-        this.speakers.open(this.format);*/
+   
     }
     
     /**
@@ -58,18 +60,16 @@ public class Voice {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
       
         byte[] data = new byte[this.microphone.getBufferSize() / 5];
-        addr = InetAddress.getByName("172.30.31.52");
         DatagramSocket socket = new DatagramSocket();
         this.microphone.start();  // Begin audio capture.
-        //this.speakers.start();
 
         while (true) {
             int bytes_read = this.microphone.read(data, 0, 1024);
 
-            //out.write(data);
-            dgp = new DatagramPacket(data, data.length,addr,9000);
+            
+            dgp = new DatagramPacket(data, data.length,this.addr,9001);
             socket.send(dgp);
-           // this.speakers.write(data, 0, bytes_read);
+           
         }
        
        
@@ -87,7 +87,7 @@ public class Voice {
     /**
      * 
      */
-    public void display_devices(Class<?> line_type) throws LineUnavailableException {
+    public static void display_devices(Class<?> line_type) throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
 
         for (int i = 0; i < mixer_info.length; i++) {
@@ -111,25 +111,23 @@ public class Voice {
      */
     public Mixer select_mic_device() throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
-        return AudioSystem.getMixer(mixer_info[8]);
+        return AudioSystem.getMixer(mixer_info[this.in_device]);
     }
 
-    public Mixer select_speaker_device() throws LineUnavailableException {
+   /* public Mixer select_speaker_device() throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
         return AudioSystem.getMixer(mixer_info[5]);
-    }
+    }*/
 
-    public static void main(String[] args) {
-        Voice voice = new Voice();
-        
+    public void run() {
+          
         try {
-            voice.display_devices(SourceDataLine.class);
-            voice.display_devices(TargetDataLine.class);
-            Mixer mic_mixer = voice.select_mic_device();
-            Mixer speaker_mixer = voice.select_speaker_device();
+            
+            Mixer mic_mixer = this.select_mic_device();
+           // Mixer speaker_mixer = voice.select_speaker_device();
 
-            voice.open_lines(mic_mixer);
-            voice.rec_mic_line();
+            this.open_lines(mic_mixer);
+            this.rec_mic_line();
         }
         catch (Exception e) {
             e.printStackTrace();

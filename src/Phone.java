@@ -132,6 +132,10 @@ public class Phone implements Runnable {
             // Triggered when the callee accepts your ongoing call.
             case ACCEPT:
                 System.out.format("\n✅  Your call has been accepted! Connecting to '%s'...\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
+                Thread caller_mic = new Thread(new Voice(in_device, message.getAddress()));
+                Thread caller_speakers = new Thread(new ReceiveTest(out_device));
+                caller_mic.start();
+                caller_speakers.start();
                 break;
 
             // Triggered when the user's ongoing phone call attempt has been rejected by the callee.
@@ -171,6 +175,10 @@ public class Phone implements Runnable {
 
             case OK:
                 System.out.println("Call accepted!");
+                Thread callee_mic = new Thread(new Voice(in_device, message.getAddress()));
+                Thread callee_speakers = new Thread(new ReceiveTest(out_device));
+                callee_mic.start();
+                callee_speakers.start();
                 break;
         
             default:
