@@ -24,7 +24,7 @@ public class Application {
      * 
      */
     public enum Type {
-        CALL("CALL");
+        CALL("CALL"), ACCEPT("ACCEPT"), REJECT("REJECT");
         
         public final String value; 
         private Type(String value) { this.value = value; }
@@ -37,6 +37,16 @@ public class Application {
             switch (Type.valueOf(reader.readLine())) {
                 case CALL:
                     this.phone.send_contact_list_request();
+                    this.phone.send_invite_request(reader.readLine());
+                    break;
+
+                case ACCEPT:
+                    this.phone.accept_received_call(reader.readLine());
+                    break;
+
+                case REJECT:
+                    this.phone.reject_received_call(reader.readLine());
+                    break;
             }
         }
 
