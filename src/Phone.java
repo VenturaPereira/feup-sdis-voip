@@ -47,7 +47,10 @@ public class Phone implements Runnable {
         URL whatismyip = new URL("http://checkip.amazonaws.com");
         BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 
-        String message = String.format("REGISTER %s %s %d", this.username, in.readLine(), this.socket.getLocalPort());
+        // InetAddress.getLocalHost().getHostAddress();
+        // this.socket.getLocalPort()
+
+        String message = String.format("REGISTER %s %s %d", this.username, in.readLine(), Macros.COMS_PORT);
         this.send(message, this.proxy_addr, Macros.PROXY_PORT);
     }
 
@@ -160,7 +163,6 @@ public class Phone implements Runnable {
                 break;
 
             case SCONTACTS:
-                System.out.println(message.getData());
                 break;
 
             case INVITE:

@@ -67,7 +67,7 @@ public class Voice implements Runnable {
             int bytes_read = this.microphone.read(data, 0, 1024);
 
             
-            dgp = new DatagramPacket(data, data.length,this.addr,9001);
+            dgp = new DatagramPacket(data, data.length,this.addr, Macros.COMS_PORT);
             socket.send(dgp);
            
         }

@@ -30,7 +30,6 @@ public class ReceiveTest implements Runnable{
     static AudioInputStream ais;
     static AudioFormat format;
     static boolean status = true;
-    static int port = 9001;
     static float sampleRate = 8000.0f;
     private int out_device;
 
