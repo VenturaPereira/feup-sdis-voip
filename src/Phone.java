@@ -3,9 +3,12 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.URL;
 import java.lang.ArrayIndexOutOfBoundsException;
 
 public class Phone implements Runnable {
@@ -41,7 +44,10 @@ public class Phone implements Runnable {
      * on a somehow basic implementation of a DNS server - a ProxyServer object.
      */
     public void send_register_request() throws IOException, UnknownHostException {
-        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().getHostAddress(), this.socket.getLocalPort());
+        URL whatismyip = new URL("http://checkip.amazonaws.com");
+        BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+
+        String message = String.format("REGISTER %s %s %d", this.username, in.readLine(), this.socket.getLocalPort());
         this.send(message, this.proxy_addr, Macros.PROXY_PORT);
     }
 
