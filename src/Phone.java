@@ -44,13 +44,12 @@ public class Phone implements Runnable {
      * on a somehow basic implementation of a DNS server - a ProxyServer object.
      */
     public void send_register_request() throws IOException, UnknownHostException {
-        URL whatismyip = new URL("http://checkip.amazonaws.com");
-        BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+        //URL whatismyip = new URL("http://checkip.amazonaws.com");
+        //BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 
-        // InetAddress.getLocalHost().getHostAddress();
-        // this.socket.getLocalPort()
+        //String message = String.format("REGISTER %s %s %d", this.username, in.readLine(), this.socket.getLocalPort());
 
-        String message = String.format("REGISTER %s %s %d", this.username, in.readLine(), Macros.COMS_PORT);
+        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().getHostAddress(), this.socket.getLocalPort());
         this.send(message, this.proxy_addr, Macros.PROXY_PORT);
     }
 
