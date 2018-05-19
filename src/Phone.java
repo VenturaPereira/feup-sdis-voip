@@ -124,11 +124,6 @@ public class Phone implements Runnable {
         
         switch (Message.get_type(message.getData())) {
 
-            // Triggered when the user attempts to register on the proxy without credentials or with faulty hashing.
-            case UNAUTHORIZED:
-                System.out.println("\n⚠️  Proxy rejected REGISTER request.\n   This is likely due to lack of password hashing.\n");
-                break;
-
             // Triggered when the callee accepts your ongoing call.
             case ACCEPT:
                 System.out.format("\n✅  Your call has been accepted! Connecting to '%s'...\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
@@ -136,6 +131,8 @@ public class Phone implements Runnable {
                 Thread caller_speakers = new Thread(new ReceiveTest(out_device));
                 caller_mic.start();
                 caller_speakers.start();
+
+                this.send("OK", message.getAddress(), message.getPort());
                 break;
 
             // Triggered when the user's ongoing phone call attempt has been rejected by the callee.

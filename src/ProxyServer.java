@@ -42,14 +42,10 @@ public class ProxyServer {
             this.contacts.remove(args.get("username"));
             this.send("UNREGISTERED 200", request.getAddress(), request.getPort());
         }
-        else if (!args.containsKey("password")) {
-            // TODO: Add MD5 on challenge.
-            this.send("UNAUTHORIZED 401", request.getAddress(), request.getPort());
-        }
         else {         
+            this.contacts.put(args.get("username"), (args.get("ip") + " " + args.get("port")).trim());
+            this.send("SOK 200", request.getAddress(), request.getPort());
         }
-        this.contacts.put(args.get("username"), (args.get("ip") + " " + args.get("port")).trim());
-        this.send("SOK 200", request.getAddress(), request.getPort());
     }
 
     /**
