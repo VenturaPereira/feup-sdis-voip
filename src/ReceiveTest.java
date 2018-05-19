@@ -45,9 +45,9 @@ public class ReceiveTest implements Runnable{
     public void run()
     {
         try{
-        System.out.println("Server started at port:"+port);
+        System.out.println("Server started at port:" + Macros.COMS_PORT);
         try{    
-        DatagramSocket serverSocket = new DatagramSocket(port);
+        DatagramSocket serverSocket = new DatagramSocket(Macros.COMS_PORT);
         
 
         byte[] receiveData = new byte[1024];
