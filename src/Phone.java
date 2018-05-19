@@ -56,6 +56,14 @@ public class Phone implements Runnable {
     }
 
     /**
+     * 
+     */
+    public void send_contact_list_request() throws IOException {
+        String message = String.format("CONTACTS");
+        this.send(message, this.proxy_addr, Macros.PROXY_PORT);
+    }
+
+    /**
      * TODO: Write documentation.
      */
     public void accept_received_call(String username) throws IOException {
@@ -142,6 +150,10 @@ public class Phone implements Runnable {
             case SINVITE:
                 String[] callee_info = Message.get_callee_info(message.getData());
                 this.send("INVITE " + this.username, InetAddress.getByName(callee_info[1]), Integer.parseInt(callee_info[2].trim()));
+                break;
+
+            case SCONTACTS:
+                System.out.println(message.getData());
                 break;
 
             case INVITE:

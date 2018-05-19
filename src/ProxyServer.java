@@ -16,7 +16,7 @@ public class ProxyServer {
      * ProxyServer entry point (main).
      */
     public static void main(String[] args) throws IOException {
-        ProxyServer proxy = new ProxyServer(Integer.parseInt(args[0]));
+        ProxyServer proxy = new ProxyServer();
         proxy.listen();
     }
 
@@ -24,8 +24,8 @@ public class ProxyServer {
      * ProxyServer constructor.
      * @param port      Port to open UDP server on.
      */
-    public ProxyServer(int port) throws SocketException {
-        this.socket = new DatagramSocket(port);
+    public ProxyServer() throws SocketException {
+        this.socket = new DatagramSocket(Macros.PROXY_PORT);
         this.contacts = new HashMap<String, String>();
     }
     
@@ -57,7 +57,7 @@ public class ProxyServer {
      * Server replies with 404 NOT FOUND code when username cannot be matched on the registry.
      * @param request   The datagram packet received from the client.
      */
-    public void get_contact_ip(DatagramPacket request) throws IOException{
+    public void get_contact_ip(DatagramPacket request) throws IOException {
         String username = Message.parse_invite(request.getData());
      
         if (this.contacts.containsKey(username)) {
@@ -66,6 +66,18 @@ public class ProxyServer {
         else {
             this.send("NOT_FOUND 404", request.getAddress(), request.getPort());
         }
+    }
+
+    /**
+     * 
+     */
+    public void get_contact_list(DatagramPacket request) throws IOException {
+        String contacts = "";
+
+        for (String key : this.contacts.keySet())
+            contacts += key + " ";
+
+        this.send("SCONTACTS " + contacts.trim(), request.getAddress(), request.getPort());
     }
 
     /**
@@ -81,6 +93,9 @@ public class ProxyServer {
             case INVITE:
                 this.get_contact_ip(request);
                 break;
+
+            case CONTACTS:
+                this.get_contact_list(request);
         
             default:
                 break;

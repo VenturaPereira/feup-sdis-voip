@@ -36,7 +36,7 @@ public class Application {
         while (true) {
             switch (Type.valueOf(reader.readLine())) {
                 case CALL:
-                    break;
+                    this.phone.send_contact_list_request();
             }
         }
 
@@ -110,7 +110,7 @@ public class Application {
             app.load_properties();
             app.initialize_phone();
 
-            //app.command_monitor();
+            app.command_monitor();
         } catch (Exception e) {}
         
 
