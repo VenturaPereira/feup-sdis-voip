@@ -51,7 +51,7 @@ public class ReceiveTest {
         format = new AudioFormat(sampleRate, 16, 2, true, true);
         dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
 
-        Mixer mixer = AudioSystem.getMixer(mixer_info[1]);
+        Mixer mixer = AudioSystem.getMixer(mixer_info[5]);
         sourceDataLine = (SourceDataLine) mixer.getLine(dataLineInfo);
         sourceDataLine.open(format);
                         System.out.println("hum");

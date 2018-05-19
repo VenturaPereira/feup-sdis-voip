@@ -9,7 +9,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -59,7 +58,7 @@ public class Voice {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
       
         byte[] data = new byte[this.microphone.getBufferSize() / 5];
-        addr = InetAddress.getByName("127.0.0.1");
+        addr = InetAddress.getByName("172.30.31.52");
         DatagramSocket socket = new DatagramSocket();
         this.microphone.start();  // Begin audio capture.
         //this.speakers.start();
@@ -112,12 +111,12 @@ public class Voice {
      */
     public Mixer select_mic_device() throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
-        return AudioSystem.getMixer(mixer_info[3]);
+        return AudioSystem.getMixer(mixer_info[8]);
     }
 
     public Mixer select_speaker_device() throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
-        return AudioSystem.getMixer(mixer_info[0]);
+        return AudioSystem.getMixer(mixer_info[5]);
     }
 
     public static void main(String[] args) {
