@@ -24,7 +24,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 
 
-public class ReceiveTest implements Runnable{
+public class PrivateCallSpeakers implements Runnable{
 
     AudioInputStream audioInputStream;
     static AudioInputStream ais;
@@ -37,7 +37,7 @@ public class ReceiveTest implements Runnable{
     static SourceDataLine sourceDataLine;
 
 
-    public ReceiveTest(int out_device){
+    public PrivateCallSpeakers(int out_device){
         this.out_device=out_device;
 
     }

@@ -19,7 +19,7 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.Port.Info;
 
-public class Voice implements Runnable {
+public class PrivateCallMicrophone implements Runnable {
     
     private static final float SAMPLE_RATE = 8000.0f;
     private static final int CHUNK_SIZE = 1024, SAMPLE_SIZE = 16, CHANNEL_MONO = 1, CHANNEL_STEREO = 2;
@@ -35,7 +35,7 @@ public class Voice implements Runnable {
     /**
      * Voice class constructor.
      */
-    public Voice(int in_device, InetAddress addr) {
+    public PrivateCallMicrophone(int in_device, InetAddress addr) {
         this.addr=addr;
         this.in_device = in_device;
         this.format = new AudioFormat(SAMPLE_RATE, SAMPLE_SIZE, CHANNEL_STEREO, true, true);
@@ -114,10 +114,7 @@ public class Voice implements Runnable {
         return AudioSystem.getMixer(mixer_info[this.in_device]);
     }
 
-   /* public Mixer select_speaker_device() throws LineUnavailableException {
-        Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
-        return AudioSystem.getMixer(mixer_info[5]);
-    }*/
+  
 
     public void run() {
           

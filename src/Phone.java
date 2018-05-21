@@ -50,7 +50,7 @@ public class Phone implements Runnable {
         
 
 
-        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().getHostAddress(), Macros.COMS_PORT);
+        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().getHostAddress(), this.socket.getLocalPort());
 
         this.send(message, this.proxy_addr, Macros.PROXY_PORT);
     }
@@ -137,8 +137,8 @@ public class Phone implements Runnable {
             // Triggered when the callee accepts your ongoing call.
             case ACCEPT:
                 System.out.format("\n✅  Your call has been accepted! Connecting to '%s'...\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
-                Thread caller_mic = new Thread(new Voice(in_device, message.getAddress()));
-                Thread caller_speakers = new Thread(new ReceiveTest(out_device));
+                Thread caller_mic = new Thread(new PrivateCallMicrophone(in_device, message.getAddress()));
+                Thread caller_speakers = new Thread(new PrivateCallSpeakers(out_device));
                 caller_mic.start();
                 caller_speakers.start();
 
@@ -181,8 +181,8 @@ public class Phone implements Runnable {
 
             case OK:
                 System.out.println("Call accepted!");
-                Thread callee_mic = new Thread(new Voice(in_device, message.getAddress()));
-                Thread callee_speakers = new Thread(new ReceiveTest(out_device));
+                Thread callee_mic = new Thread(new PrivateCallMicrophone(in_device, message.getAddress()));
+                Thread callee_speakers = new Thread(new PrivateCallSpeakers(out_device));
                 callee_mic.start();
                 callee_speakers.start();
                 break;
