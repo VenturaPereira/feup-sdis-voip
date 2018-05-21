@@ -44,14 +44,16 @@ public class Phone implements Runnable {
      * on a somehow basic implementation of a DNS server - a ProxyServer object.
      */
     public void send_register_request() throws IOException, UnknownHostException {
+        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().getHostAddress(), this.socket.getLocalPort());
+        this.send(message, this.proxy_addr, Macros.PROXY_PORT);
+    }
 
-        
-
-        
-
-
-        String message = String.format("REGISTER %s %s %d", this.username, InetAddress.getLocalHost().getHostAddress(), Macros.COMS_PORT);
-
+    /**
+     * Attempts to create a new lobby by requesting it to the server.
+     * @param lobby_name    The name for the lobby to be created.
+     */
+    public void send_lobby_register_request(String lobby_name) throws IOException {
+        String message = String.format("LOBBYREGISTER %s", lobby_name);
         this.send(message, this.proxy_addr, Macros.PROXY_PORT);
     }
 
@@ -69,8 +71,14 @@ public class Phone implements Runnable {
      * 
      */
     public void send_contact_list_request() throws IOException {
-        String message = String.format("CONTACTS");
-        this.send(message, this.proxy_addr, Macros.PROXY_PORT);
+        this.send("CONTACTS", this.proxy_addr, Macros.PROXY_PORT);
+    }
+
+    /**
+     * 
+     */
+    public void send_lobby_list_request() throws IOException {
+        this.send("LOBBIES", this.proxy_addr, Macros.PROXY_PORT);
     }
 
     /**
@@ -152,6 +160,10 @@ public class Phone implements Runnable {
 
             case UNREGISTERED:
                 System.out.println("\n⚠️  Proxy unregistered this phone's IP address!\n   In order to use VoIP functions, please REGISTER your phone.\n");
+                break;
+
+            case SLOBBYOK:
+                System.out.println("Lobby created.");
                 break;
             
             case SOK:

@@ -27,11 +27,36 @@ public class Application {
     /**
      * 
      */
+    public void show_help_menu() {
+        System.out.println("HELP: Displays this help menu.");
+    }
+
+    /**
+     * 
+     */
     public void command_monitor() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         while (true) {
             switch (reader.readLine()) {
+                
+                case "HELP":
+                    show_help_menu(); 
+                    break;
+
+                case "LOBBY":
+                    this.phone.send_lobby_list_request(); 
+                    break;
+
+                case "LOBBY CREATE":
+                    System.out.format("What's a catchy name for your lobby? ");
+                    this.phone.send_lobby_register_request(reader.readLine());
+                    break;
+
+                case "LOBBY JOIN":
+                    System.out.format("Which lobby suits you best? ");
+                    break;
+
                 case "CALL":
                     this.phone.send_contact_list_request();
                     this.phone.send_invite_request(reader.readLine());

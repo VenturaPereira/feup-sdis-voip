@@ -12,7 +12,7 @@ public class Message {
         REGISTER("REGISTER"), INVITE("INVITE"), RINGING("RINGING"), SINVITE("SINVITE"),
         SOK("SOK"), OK("OK"), ACK("ACK"), UNREGISTERED("UNREGISTERED"), NOT_FOUND("NOT_FOUND"),
         ACCEPT("ACCEPT"), REJECT("REJECT"), SCONTACTS("SCONTACTS"),
-        CONTACTS("CONTACTS");
+        CONTACTS("CONTACTS"), LOBBYREGISTER("LOBBYREGISTER"), SLOBBYOK("SLOBBYOK");
 
         public final String value; 
 
@@ -55,6 +55,11 @@ public class Message {
         result.put("port", tokens[3]);
         
         return result;
+    }
+
+    public static String parse_lobby_register(byte[] request) {
+        String[] tokens = new String(request).split(" ");
+        return tokens[1];
     }
 
     public static String parse_invite(byte[] request) {

@@ -11,6 +11,7 @@ public class ProxyServer {
 
     private DatagramSocket socket;
     private HashMap<String, String> contacts;
+    private HashMap<String, Integer> lobbies;
 
     /**
      * ProxyServer entry point (main).
@@ -27,6 +28,7 @@ public class ProxyServer {
     public ProxyServer() throws SocketException {
         this.socket = new DatagramSocket(Macros.PROXY_PORT);
         this.contacts = new HashMap<String, String>();
+        this.lobbies = new HashMap<String, Integer>();
     }
     
     /**
@@ -44,6 +46,21 @@ public class ProxyServer {
         }
         else {         
             this.contacts.put(args.get("username"), (args.get("ip") + " " + args.get("port")).trim());
+            this.send("SOK 200", request.getAddress(), request.getPort());
+        }
+    }
+
+    /**
+     * 
+     */
+    public void store_lobby(DatagramPacket request) throws IOException {
+        String lobby_name = Message.parse_lobby_register(request.getData());
+        
+        if (this.lobbies.containsKey(lobby_name)) {
+            System.out.println("Occupied!");
+        } 
+        else {
+            this.lobbies.put(lobby_name, Macros.LOBBY_PORT);
             this.send("SOK 200", request.getAddress(), request.getPort());
         }
     }
@@ -85,6 +102,9 @@ public class ProxyServer {
             case REGISTER:
                 this.store_contact(request);
                 break;
+
+            case LOBBYREGISTER:
+                this.store_lobby(request); break;
 
             case INVITE:
                 this.get_contact_ip(request);
