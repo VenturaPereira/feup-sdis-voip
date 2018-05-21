@@ -55,6 +55,7 @@ public class Application {
 
                 case "LOBBY JOIN":
                     System.out.format("Which lobby suits you best? ");
+                    this.phone.join_lobby_request(reader.readLine());
                     break;
 
                 case "CALL":

@@ -70,6 +70,14 @@ public class Phone implements Runnable {
     /**
      * 
      */
+    public void join_lobby_request(String lobby_name) throws IOException {
+        String message = String.format("LOBBYJOIN %s", lobby_name);
+        this.send(message, this.proxy_addr, Macros.PROXY_PORT);
+    }
+
+    /**
+     * 
+     */
     public void send_contact_list_request() throws IOException {
         this.send("CONTACTS", this.proxy_addr, Macros.PROXY_PORT);
     }
@@ -160,6 +168,12 @@ public class Phone implements Runnable {
 
             case UNREGISTERED:
                 System.out.println("\n⚠️  Proxy unregistered this phone's IP address!\n   In order to use VoIP functions, please REGISTER your phone.\n");
+                break;
+
+            case SLOBBIES:
+                break;
+
+            case SLOBBY:
                 break;
 
             case SLOBBYOK:
