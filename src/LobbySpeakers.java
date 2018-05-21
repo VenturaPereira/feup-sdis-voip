@@ -1,7 +1,9 @@
 
 import java.io.ByteArrayInputStream;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.net.MulticastSocket;
+import java.net.InetAddress;
+
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -24,31 +26,38 @@ import javax.sound.sampled.LineUnavailableException;
 
 
 
-public class ReceiveTest implements Runnable{
+
+
+
+public class LobbySpeakers implements Runnable{
 
     AudioInputStream audioInputStream;
     static AudioInputStream ais;
     static AudioFormat format;
     static boolean status = true;
     static float sampleRate = 8000.0f;
-    private int out_device;
-
+    private int out_device, port;
+    private InetAddress addr;
     static DataLine.Info dataLineInfo;
     static SourceDataLine sourceDataLine;
 
 
-    public ReceiveTest(int out_device){
-        this.out_device=out_device;
 
+    public LobbySpeakers(int out_device, int port, InetAddress addr){
+
+        this.out_device=out_device;
+        this.port=port;
+        this.addr=addr;
     }
-    
-    public void run()
+
+
+     public void run()
     {
         try{
-        System.out.println("Server started at port:" + Macros.COMS_PORT);
+        System.out.println("Server started at port:" + this.port);
         try{    
-        DatagramSocket serverSocket = new DatagramSocket(Macros.COMS_PORT);
-        
+        MulticastSocket serverSocket = new MulticastSocket(this.port);
+        serverSocket.joinGroup(this.addr);
 
         byte[] receiveData = new byte[1024];
 
@@ -100,4 +109,18 @@ public class ReceiveTest implements Runnable{
             e.printStackTrace();
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
