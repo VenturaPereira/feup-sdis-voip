@@ -2,6 +2,8 @@
 import java.io.ByteArrayInputStream;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.net.InetAddress;
+
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -34,14 +36,14 @@ public class LobbySpeakers implements Runnable{
     static AudioFormat format;
     static boolean status = true;
     static float sampleRate = 8000.0f;
-    private int out_device;
+    private int out_device, port;
     private InetAddress addr;
     static DataLine.Info dataLineInfo;
     static SourceDataLine sourceDataLine;
 
 
 
-    public LobbySpeakers(int out_device, int port, InetAdress addr){
+    public LobbySpeakers(int out_device, int port, InetAddress addr){
 
         this.out_device=out_device;
         this.port=port;
@@ -54,7 +56,7 @@ public class LobbySpeakers implements Runnable{
         try{
         System.out.println("Server started at port:" + this.port);
         try{    
-        DatagramSocket serverSocket = new MulticastSocket(this.port);
+        MulticastSocket serverSocket = new MulticastSocket(this.port);
         serverSocket.joinGroup(this.addr);
 
         byte[] receiveData = new byte[1024];
