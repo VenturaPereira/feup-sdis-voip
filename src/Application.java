@@ -88,11 +88,11 @@ public class Application {
         System.out.format("Username: ");
         properties.setProperty("USERNAME", scanner.nextLine());
         
-        Voice.display_devices(TargetDataLine.class);
+        PrivateCallMicrophone.display_devices(TargetDataLine.class);
         System.out.format("Input device: ");
         properties.setProperty("DEFAULT_INPUT_DEVICE", scanner.nextLine());
         
-        Voice.display_devices(SourceDataLine.class);
+        PrivateCallMicrophone.display_devices(SourceDataLine.class);
         System.out.format("Output device: ");
         properties.setProperty("DEFAULT_OUTPUT_DEVICE", scanner.nextLine());
 

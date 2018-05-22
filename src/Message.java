@@ -60,7 +60,7 @@ public class Message {
 
     public static String parse_lobby_register(byte[] request) {
         String[] tokens = new String(request).split(" ");
-        return tokens[1];
+        return tokens[1].trim();
     }
 
     public static String parse_invite(byte[] request) {

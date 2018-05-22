@@ -86,7 +86,7 @@ public class ProxyServer {
      */
     public void get_lobby_port(DatagramPacket request) throws IOException {
         String lobby_name = Message.parse_lobby_register(request.getData());
-
+        System.out.println(lobby_name);
         if (this.lobbies.containsKey(lobby_name)) {
             this.send("SLOBBY " + String.valueOf(this.lobbies.get(lobby_name)), request.getAddress(), request.getPort());
         }
@@ -110,7 +110,7 @@ public class ProxyServer {
     public void get_lobby_list(DatagramPacket request) throws IOException {
         String lobbies = "";
 
-        for (String key : this.contacts.keySet())
+        for (String key : this.lobbies.keySet())
             lobbies += key + " ";
 
         this.send("SLOBBIES " + lobbies.trim(), request.getAddress(), request.getPort());
