@@ -58,11 +58,6 @@ public class Message {
         return result;
     }
 
-    public static String parse_lobby_register(byte[] request) {
-        String[] tokens = new String(request).split(" ");
-        return tokens[1].trim();
-    }
-
     public static String parse_invite(byte[] request) {
         String[] tokens = new String(request).split(" ");
         return tokens[1].trim();

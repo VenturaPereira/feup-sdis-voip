@@ -11,7 +11,7 @@ public class ProxyServer {
 
     private DatagramSocket socket;
     private HashMap<String, String> contacts;
-    private HashMap<String, Integer> lobbies;
+    private HashMap<String, String> lobbies;
 
     /**
      * ProxyServer entry point (main).
@@ -28,7 +28,7 @@ public class ProxyServer {
     public ProxyServer() throws SocketException {
         this.socket = new DatagramSocket(Macros.PROXY_PORT);
         this.contacts = new HashMap<String, String>();
-        this.lobbies = new HashMap<String, Integer>();
+        this.lobbies = new HashMap<String, String>();
     }
     
     /**
@@ -54,13 +54,13 @@ public class ProxyServer {
      * 
      */
     public void store_lobby(DatagramPacket request) throws IOException {
-        String lobby_name = Message.parse_lobby_register(request.getData());
+        String lobby_name = Message.get_info(request.getData(), 1);
         
         if (this.lobbies.containsKey(lobby_name)) {
             System.out.println("Occupied!");
         } 
         else {
-            this.lobbies.put(lobby_name, Macros.LOBBY_PORT);
+            this.lobbies.put(lobby_name, String.format("%s %d", Macros.LOBBY_IP, Macros.LOBBY_PORT));
             this.send("SOK 200", request.getAddress(), request.getPort());
         }
     }
@@ -84,11 +84,11 @@ public class ProxyServer {
     /**
      * 
      */
-    public void get_lobby_port(DatagramPacket request) throws IOException {
-        String lobby_name = Message.parse_lobby_register(request.getData());
-        System.out.println(lobby_name);
-        if (this.lobbies.containsKey(lobby_name)) {
-            this.send("SLOBBY " + String.valueOf(this.lobbies.get(lobby_name)), request.getAddress(), request.getPort());
+    public void get_lobby_ip(DatagramPacket request) throws IOException {
+        HashMap<String, String> lobby_info = Message.parse_register(request.getData());
+
+        if (this.lobbies.containsKey(lobby_info.get("username"))) {
+            this.send("SLOBBY " + this.lobbies.get(lobby_info.get("username")), request.getAddress(), request.getPort());
         }
     }
 
@@ -130,7 +130,7 @@ public class ProxyServer {
                 this.get_lobby_list(request); break;
 
             case LOBBYJOIN:
-                this.get_lobby_port(request); break;
+                this.get_lobby_ip(request); break;
 
             case LOBBYREGISTER:
                 this.store_lobby(request); break;
