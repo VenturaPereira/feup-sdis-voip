@@ -143,12 +143,17 @@ public class Phone implements Runnable {
     }
 
 
-    public void thread_iniciator(int mode, int in_device, int out_device, InetAddress addr){
+    public void thread_iniciator(int mode, int in_device, int out_device, InetAddress addr, int port){
             if(mode == 1){
                 Thread call_mic = new Thread(new PrivateCallMicrophone(in_device, addr));
                 Thread call_speakers = new Thread(new PrivateCallSpeakers(out_device));
                 call_mic.start();
                 call_speakers.start();
+            }else if(mode == 0){
+                Thread lobby_mic = new Thread(new LobbyMicrophone(in_device, addr, port));
+                Thread lobby_speakers = new Thread(new LobbySpeakers(out_device, port, addr));
+                lobby_mic.start();
+                lobby_speakers.start();
             }
         
     }
@@ -164,11 +169,7 @@ public class Phone implements Runnable {
             // Triggered when the callee accepts your ongoing call.
             case ACCEPT:
                 System.out.format("\n✅  Your call has been accepted! Connecting to '%s'...\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
-            //    Thread caller_mic = new Thread(new PrivateCallMicrophone(in_device, message.getAddress()));
-              //  Thread caller_speakers = new Thread(new PrivateCallSpeakers(out_device));
-               // caller_mic.start();
-                //caller_speakers.start();
-                this.thread_iniciator(1, in_device, out_device, message.getAddress());
+                this.thread_iniciator(1, in_device, out_device, message.getAddress(),0);
                 this.send("OK", message.getAddress(), message.getPort());
                 break;
 
@@ -185,7 +186,8 @@ public class Phone implements Runnable {
                 break;
 
             case SLOBBY:
-                
+                String[] lobby_info = Message.get_callee_info(message.getData());
+                this.thread_iniciator(0, in_device, out_device, InetAddress.getByName(lobby_info[1]), Integer.parseInt(lobby_info[2]));
                 break;
 
             case SLOBBYOK:
@@ -219,11 +221,8 @@ public class Phone implements Runnable {
 
             case OK:
                 System.out.println("Call accepted!");
-               /* Thread callee_mic = new Thread(new PrivateCallMicrophone(in_device, message.getAddress()));
-                Thread callee_speakers = new Thread(new PrivateCallSpeakers(out_device));
-                callee_mic.start();
-                callee_speakers.start();*/
-                this.thread_iniciator(1, in_device, out_device, message.getAddress());
+              
+                this.thread_iniciator(1, in_device, out_device, message.getAddress(),0);
                 break;
         
             default:
