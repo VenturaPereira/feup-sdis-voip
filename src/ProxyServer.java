@@ -85,10 +85,10 @@ public class ProxyServer {
      * 
      */
     public void get_lobby_ip(DatagramPacket request) throws IOException {
-        HashMap<String, String> lobby_info = Message.parse_register(request.getData());
+        String lobby_name = Message.get_info(request.getData(), 1);
 
-        if (this.lobbies.containsKey(lobby_info.get("username"))) {
-            this.send("SLOBBY " + this.lobbies.get(lobby_info.get("username")), request.getAddress(), request.getPort());
+        if (this.lobbies.containsKey(lobby_name)) {
+            this.send("SLOBBY " + this.lobbies.get(lobby_name), request.getAddress(), request.getPort());
         }
     }
 
