@@ -142,6 +142,17 @@ public class Phone implements Runnable {
         System.out.format("📢  [SENT] '%s' sent to %s, %d\n", message, addr.getHostAddress(), port);
     }
 
+
+    public void thread_iniciator(int mode, int in_device, int out_device, InetAddress addr){
+            if(mode == 1){
+                Thread call_mic = new Thread(new PrivateCallMicrophone(in_device, addr));
+                Thread call_speakers = new Thread(new PrivateCallSpeakers(out_device));
+                call_mic.start();
+                call_speakers.start();
+            }
+        
+    }
+
     /**
      * Handles received packets on the phone.
      * @param message   The datagram packet received from either other phone/server.
@@ -153,11 +164,11 @@ public class Phone implements Runnable {
             // Triggered when the callee accepts your ongoing call.
             case ACCEPT:
                 System.out.format("\n✅  Your call has been accepted! Connecting to '%s'...\n\n", Message.get_info(message.getData(), SPEAKER_INDEX));
-                Thread caller_mic = new Thread(new PrivateCallMicrophone(in_device, message.getAddress()));
-                Thread caller_speakers = new Thread(new PrivateCallSpeakers(out_device));
-                caller_mic.start();
-                caller_speakers.start();
-
+            //    Thread caller_mic = new Thread(new PrivateCallMicrophone(in_device, message.getAddress()));
+              //  Thread caller_speakers = new Thread(new PrivateCallSpeakers(out_device));
+               // caller_mic.start();
+                //caller_speakers.start();
+                this.thread_iniciator(1, in_device, out_device, message.getAddress());
                 this.send("OK", message.getAddress(), message.getPort());
                 break;
 
@@ -208,10 +219,11 @@ public class Phone implements Runnable {
 
             case OK:
                 System.out.println("Call accepted!");
-                Thread callee_mic = new Thread(new PrivateCallMicrophone(in_device, message.getAddress()));
+               /* Thread callee_mic = new Thread(new PrivateCallMicrophone(in_device, message.getAddress()));
                 Thread callee_speakers = new Thread(new PrivateCallSpeakers(out_device));
                 callee_mic.start();
-                callee_speakers.start();
+                callee_speakers.start();*/
+                this.thread_iniciator(1, in_device, out_device, message.getAddress());
                 break;
         
             default:
