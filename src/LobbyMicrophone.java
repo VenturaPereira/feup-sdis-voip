@@ -67,13 +67,14 @@ public class LobbyMicrophone implements Runnable{
       
         byte[] data = new byte[this.microphone.getBufferSize() / 5];
         DatagramSocket socket = new DatagramSocket();
-        this.microphone.start();  // Begin audio capture.
-
+      //  this.microphone.start();  // Begin audio capture.
+        String testing = "abcdefghij";
         while (true) {
-            int bytes_read = this.microphone.read(data, 0, 1024);
-
+           // int bytes_read = this.microphone.read(data, 0, 1024);
             
-            dgp = new DatagramPacket(data, data.length,this.addr, this.port);
+            
+          //  dgp = new DatagramPacket(data, data.length,this.addr, this.port);
+           dgp = new DatagramPacket(testing.getBytes(), testing.getBytes().length,this.addr, this.port);
             socket.send(dgp);
            
         }

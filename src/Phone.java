@@ -31,7 +31,6 @@ public class Phone implements Runnable {
         this.proxy_addr = InetAddress.getByName(proxy_host_name);
         this.in_device = in_device;
         this.out_device = out_device;
-        
         this.incoming_calls = new ArrayList<DatagramPacket>();
         this.ongoing_calls = new ArrayList<DatagramPacket>();
 
@@ -187,6 +186,8 @@ public class Phone implements Runnable {
 
             case SLOBBY:
                 String[] lobby_info = Message.get_callee_info(message.getData());
+                System.out.println("addr: " + lobby_info[1]);
+                System.out.println("port: " + lobby_info[2]);
                 this.thread_iniciator(0, in_device, out_device, InetAddress.getByName(lobby_info[1]), Integer.parseInt(lobby_info[2]));
                 break;
 

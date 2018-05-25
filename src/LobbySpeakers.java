@@ -53,45 +53,47 @@ public class LobbySpeakers implements Runnable{
 
      public void run()
     {
-        try{
+     //   try{
         System.out.println("Server started at port:" + this.port);
         try{    
         MulticastSocket serverSocket = new MulticastSocket(this.port);
         serverSocket.joinGroup(this.addr);
 
-        byte[] receiveData = new byte[1024];
+        byte[] receiveData = new byte[2048];
 
-        Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
+        //Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
         
-        format = new AudioFormat(sampleRate, 16, 2, true, true);
-        dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
+    //    format = new AudioFormat(sampleRate, 16, 2, true, true);
+      //  dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
 
-        Mixer mixer = AudioSystem.getMixer(mixer_info[this.out_device]);
-        sourceDataLine = (SourceDataLine) mixer.getLine(dataLineInfo);
-        sourceDataLine.open(format);
-                        System.out.println("hum");
+        //Mixer mixer = AudioSystem.getMixer(mixer_info[this.out_device]);
+        //sourceDataLine = (SourceDataLine) mixer.getLine(dataLineInfo);
+        //sourceDataLine.open(format);
+                      System.out.println("hum");
 
-        sourceDataLine.start();
+        //sourceDataLine.start();
 
         //FloatControl volumeControl = (FloatControl) sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
         //volumeControl.setValue(1.00f);
 
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
-        ByteArrayInputStream baiss = new ByteArrayInputStream(receivePacket.getData());
+        //ByteArrayInputStream baiss = new ByteArrayInputStream(receivePacket.getData());
 
         while (status == true) 
         {
             serverSocket.receive(receivePacket);
-            ais = new AudioInputStream(baiss, format, receivePacket.getLength());
-            toSpeaker(receivePacket.getData());
+            String receiving = new String(receivePacket.getData(), 0, receivePacket.getData().length);
+            System.out.println(receiving);
+           // ais = new AudioInputStream(baiss, format, receivePacket.getLength());
+            //toSpeaker(receivePacket.getData());
         }
 
-        sourceDataLine.drain();
-        sourceDataLine.close();
-        }catch(LineUnavailableException e){
-            e.printStackTrace();
-    }
+        //sourceDataLine.drain();
+        //sourceDataLine.close();
+        //}catch(LineUnavailableException e){
+          //  e.printStackTrace();
+    //}
 
     }catch(Exception e){
             e.printStackTrace();
@@ -101,9 +103,9 @@ public class LobbySpeakers implements Runnable{
     public static void toSpeaker(byte soundbytes[]) {
         try 
         {
-            System.out.println("At the speaker");
+            
             sourceDataLine.write(soundbytes, 0, soundbytes.length);
-            System.out.println(soundbytes.length);
+          
         } catch (Exception e) {
             System.out.println("Not working in speakers...");
             e.printStackTrace();
