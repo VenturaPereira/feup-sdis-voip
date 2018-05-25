@@ -41,10 +41,11 @@ public class LobbySpeakers implements Runnable{
     static DataLine.Info dataLineInfo;
     static SourceDataLine sourceDataLine;
 
+ 
 
 
     public LobbySpeakers(int out_device, int port, InetAddress addr){
-
+        
         this.out_device=out_device;
         this.port=port;
         this.addr=addr;

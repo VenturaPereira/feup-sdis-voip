@@ -10,6 +10,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.URL;
 import java.lang.ArrayIndexOutOfBoundsException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Phone implements Runnable {
 
@@ -22,6 +24,7 @@ public class Phone implements Runnable {
     private int in_device, out_device;    
 
     private ArrayList<DatagramPacket> incoming_calls, ongoing_calls;
+    private static ExecutorService exec;
 
     /**
      * Phone constructor.
@@ -35,7 +38,10 @@ public class Phone implements Runnable {
         this.ongoing_calls = new ArrayList<DatagramPacket>();
 
         this.socket = new DatagramSocket();
-        new Thread(this).start();
+       // new Thread(this).start();
+        exec = Executors.newFixedThreadPool(1000);
+        exec.execute(this);
+
     }
 
     /**
@@ -144,15 +150,19 @@ public class Phone implements Runnable {
 
     public void thread_iniciator(int mode, int in_device, int out_device, InetAddress addr, int port){
             if(mode == 1){
-                Thread call_mic = new Thread(new PrivateCallMicrophone(in_device, addr));
-                Thread call_speakers = new Thread(new PrivateCallSpeakers(out_device));
-                call_mic.start();
-                call_speakers.start();
+             //   Thread call_mic = new Thread(new PrivateCallMicrophone(in_device, addr));
+               // Thread call_speakers = new Thread(new PrivateCallSpeakers(out_device));
+              //  call_mic.start();
+                //call_speakers.start();
+                exec.execute(new PrivateCallMicrophone(in_device,addr));
+                exec.execute(new PrivateCallSpeakers(out_device));
             }else if(mode == 0){
-                Thread lobby_mic = new Thread(new LobbyMicrophone(in_device, addr, port));
-                Thread lobby_speakers = new Thread(new LobbySpeakers(out_device, port, addr));
-                lobby_mic.start();
-                lobby_speakers.start();
+                //Thread lobby_mic = new Thread(new LobbyMicrophone(in_device, addr, port));
+              //  Thread lobby_speakers = new Thread(new LobbySpeakers(out_device, port, addr));
+               // lobby_mic.start();
+                //lobby_speakers.start();
+                exec.execute(new LobbyMicrophone(in_device,addr,port));
+                exec.execute(new LobbySpeakers(out_device,port,addr));
             }
         
     }
