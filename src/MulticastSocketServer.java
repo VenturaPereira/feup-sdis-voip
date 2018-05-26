@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 
 public class MulticastSocketServer {
     
-    final static String INET_ADDR = "224.0.0.3";
+    final static String INET_ADDR = "225.0.0.3";
     final static int PORT = 8888;
 
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
@@ -15,6 +15,7 @@ public class MulticastSocketServer {
      
         // Open a new DatagramSocket, which will be used to send the data.
         try (DatagramSocket serverSocket = new DatagramSocket()) {
+            serverSocket.setBroadcast(true);
             for (int i = 0; i < 5; i++) {
                 String msg = "Sent message no " + i;
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 
 	     
 
-	    final static String INET_ADDR = "172.29.0.53";
+	    final static String INET_ADDR = "225.0.0.3";
 
     final static int PORT = 8888;
 
@@ -45,7 +45,6 @@ import java.io.IOException;
 	        try (MulticastSocket clientSocket = new MulticastSocket(PORT)){
 
 	            //Joint the Multicast group.
-
 	            clientSocket.joinGroup(address);
 
 	      
