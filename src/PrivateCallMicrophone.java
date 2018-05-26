@@ -57,7 +57,6 @@ public class PrivateCallMicrophone implements Runnable {
      */
     public void rec_mic_line() throws IOException {
        try{
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
       
         byte[] data = new byte[this.microphone.getBufferSize() / 5];
         DatagramSocket socket = new DatagramSocket();

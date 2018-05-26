@@ -63,13 +63,12 @@ public class LobbyMicrophone implements Runnable{
      */
     public void rec_mic_line() throws IOException {
        try{
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
       
         byte[] data = new byte[this.microphone.getBufferSize() / 5];
         DatagramSocket socket = new DatagramSocket();
       //  this.microphone.start();  // Begin audio capture.
-        String testing = "abcdefghij";
-        while (true) {
+        String testing = "tomaaaaaaaaaaaaaaaaaa xDDD";
+       // while (true) {
            // int bytes_read = this.microphone.read(data, 0, 1024);
             
             
@@ -77,7 +76,7 @@ public class LobbyMicrophone implements Runnable{
            dgp = new DatagramPacket(testing.getBytes(), testing.getBytes().length,this.addr, this.port);
             socket.send(dgp);
            
-        }
+       // }
        
        
         }catch (UnknownHostException e) {

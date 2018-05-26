@@ -57,10 +57,11 @@ public class LobbySpeakers implements Runnable{
      //   try{
         System.out.println("Server started at port:" + this.port);
         try{    
+        byte[] receiveData = new byte[2048];
         MulticastSocket serverSocket = new MulticastSocket(this.port);
         serverSocket.joinGroup(this.addr);
 
-        byte[] receiveData = new byte[2048];
+        
 
         //Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
         
@@ -77,12 +78,12 @@ public class LobbySpeakers implements Runnable{
         //FloatControl volumeControl = (FloatControl) sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
         //volumeControl.setValue(1.00f);
 
-        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
         //ByteArrayInputStream baiss = new ByteArrayInputStream(receivePacket.getData());
 
         while (status == true) 
         {
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             serverSocket.receive(receivePacket);
             String receiving = new String(receivePacket.getData(), 0, receivePacket.getData().length);
             System.out.println(receiving);
