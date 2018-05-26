@@ -60,7 +60,7 @@ public class ProxyServer {
             System.out.println("Occupied!");
         } 
         else {
-            this.lobbies.put(lobby_name, String.format("%s %d", Macros.LOBBY_IP, Macros.LOBBY_PORT));
+            this.lobbies.put(lobby_name, String.format("%s %d", "172.29.0.7", Macros.LOBBY_PORT));
             this.send("SOK 200", request.getAddress(), request.getPort());
         }
     }

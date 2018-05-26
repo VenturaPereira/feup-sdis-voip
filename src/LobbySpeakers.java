@@ -56,10 +56,13 @@ public class LobbySpeakers implements Runnable{
     {
      //   try{
         System.out.println("Server started at port:" + this.port);
-        try{    
         byte[] receiveData = new byte[2048];
-        MulticastSocket serverSocket = new MulticastSocket(this.port);
-        serverSocket.joinGroup(this.addr);
+        try(MulticastSocket serverSocket = new MulticastSocket(this.port)){
+           // serverSocket.setInterface(this.addr);
+            //serverSocket.setBroadcast(true); 
+        
+        
+        serverSocket.joinGroup(InetAddress.getByName("224.0.0.3"));
 
         
 
