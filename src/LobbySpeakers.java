@@ -77,12 +77,12 @@ public class LobbySpeakers implements Runnable{
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
                 serverSocket.receive(receivePacket);
-                System.out.println("packet: " + receivePacket.getAddress());
-                System.out.println("ip4: " + InetAddress.getLocalHost().getHostAddress());
+                System.out.println("packet: |" + receivePacket.getAddress().toString().replace("/","").trim() + "|");
+                System.out.println("ip4: |" + InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim() + "|");
                 byte[] toSend = Arrays.copyOfRange(receiveData, 0, receivePacket.getLength());
 
 
-                if(receivePacket.getAddress().toString() != InetAddress.getLocalHost().getHostAddress().toString()){
+                if(!receivePacket.getAddress().toString().replace("/","").trim().equals(InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim())){
                   System.out.println("lol");
                   exec.execute(new SpeakersWriter(toSend,sourceDataLine));
                 }
