@@ -21,7 +21,7 @@ import javax.sound.sampled.Port.Info;
 
 public class PrivateCallMicrophone implements Runnable {
     
-    private static final float SAMPLE_RATE = 8000.0f;
+    private static final float SAMPLE_RATE = 44100.0f;
     private static final int CHUNK_SIZE = 1024, SAMPLE_SIZE = 16, CHANNEL_MONO = 1, CHANNEL_STEREO = 2;
 
     private TargetDataLine microphone;
@@ -63,7 +63,7 @@ public class PrivateCallMicrophone implements Runnable {
         this.microphone.start();  // Begin audio capture.
 
         while (true) {
-            int bytes_read = this.microphone.read(data, 0, 1024);
+            int bytes_read = this.microphone.read(data, 0, 512);
 
             
             dgp = new DatagramPacket(data, data.length,this.addr, Macros.COMS_PORT);
