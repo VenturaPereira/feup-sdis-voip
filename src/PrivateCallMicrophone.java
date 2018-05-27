@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
@@ -31,6 +32,8 @@ public class PrivateCallMicrophone implements Runnable {
     private DatagramPacket dgp;
     private int in_device;
 
+    private FloatControl volume_control;
+
 
     /**
      * Voice class constructor.
@@ -49,7 +52,7 @@ public class PrivateCallMicrophone implements Runnable {
         this.microphone = (TargetDataLine) mic_mixer.getLine(out_info);
         this.microphone.open(this.format);
 
-   
+        this.volume_control = (FloatControl) this.microphone.getControl(FloatControl.Type.MASTER_GAIN); 
     }
     
     /**
@@ -79,8 +82,14 @@ public class PrivateCallMicrophone implements Runnable {
 
         } catch (IOException e2) {
   
+        }
     }
 
+    /**
+     * 
+     */
+    public void set_volume(float value) {
+        this.volume_control.setValue(value);
     }
 
     /**

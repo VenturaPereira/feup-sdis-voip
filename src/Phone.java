@@ -21,10 +21,14 @@ public class Phone implements Runnable {
     private InetAddress proxy_addr;
     private DatagramSocket socket;
 
-    private int in_device, out_device;    
+    private int in_device, out_device;
+    private float mic_volume = 0.5f, speakers_volume = 0.5f;
 
     private ArrayList<DatagramPacket> incoming_calls, ongoing_calls;
     private static ExecutorService exec;
+
+    private PrivateCallMicrophone curr_mic;
+    private PrivateCallSpeakers curr_speakers;
 
     /**
      * Phone constructor.
@@ -115,6 +119,14 @@ public class Phone implements Runnable {
     }
 
     /**
+     * 
+     */
+    public void adjust_volume(int device_type, float value) {
+        if (device_type == 0) this.curr_mic.set_volume(value / 100); 
+        else this.curr_speakers.set_volume(value / 100);
+    }
+
+    /**
      * Rejects a provided user's call.
      * TODO: Elaborate on documentation.
      */
@@ -154,8 +166,12 @@ public class Phone implements Runnable {
                // Thread call_speakers = new Thread(new PrivateCallSpeakers(out_device));
               //  call_mic.start();
                 //call_speakers.start();
-                exec.execute(new PrivateCallMicrophone(in_device,addr));
-                exec.execute(new PrivateCallSpeakers(out_device));
+                this.curr_mic = new PrivateCallMicrophone(in_device, addr);
+                exec.execute(this.curr_mic);
+
+                this.curr_speakers = new PrivateCallSpeakers(out_device);
+                exec.execute(this.curr_speakers);
+
             }else if(mode == 0){
                 //Thread lobby_mic = new Thread(new LobbyMicrophone(in_device, addr, port));
               //  Thread lobby_speakers = new Thread(new LobbySpeakers(out_device, port, addr));
@@ -239,6 +255,20 @@ public class Phone implements Runnable {
             default:
                 break;
         }
+    }
+
+    /**
+     * 
+     */
+    public float get_mic_volume() {
+        return this.mic_volume;
+    }
+
+    /**
+     * 
+     */
+    public float get_speakers_volume() {
+        return this.speakers_volume;
     }
     
     /**

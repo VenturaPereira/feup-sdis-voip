@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.Mixer;
 
@@ -36,10 +37,19 @@ public class PrivateCallSpeakers implements Runnable{
     static DataLine.Info dataLineInfo;
     static SourceDataLine sourceDataLine;
 
+    private FloatControl volume_control;
+
 
     public PrivateCallSpeakers(int out_device){
-        this.out_device=out_device;
+        this.out_device = out_device;
+        this.format = new AudioFormat(sampleRate, 16, 2, true, true);
+    }
 
+    /**
+     * 
+     */
+    public void set_volume(float value) {
+        this.volume_control.setValue(value);
     }
     
     public void run()
@@ -54,7 +64,6 @@ public class PrivateCallSpeakers implements Runnable{
 
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
         
-        format = new AudioFormat(sampleRate, 16, 2, true, true);
         dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
 
         Mixer mixer = AudioSystem.getMixer(mixer_info[this.out_device]);
@@ -64,8 +73,7 @@ public class PrivateCallSpeakers implements Runnable{
 
         sourceDataLine.start();
 
-        //FloatControl volumeControl = (FloatControl) sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
-        //volumeControl.setValue(1.00f);
+        this.volume_control = (FloatControl) this.sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN); 
 
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 

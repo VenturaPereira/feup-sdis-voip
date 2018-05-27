@@ -44,6 +44,16 @@ public class Application {
                     show_help_menu(); 
                     break;
 
+                case "MIC VOLUME":
+                    System.out.format("Current microphone volume: %f\nDesired volume (0-100): ", this.phone.get_mic_volume());
+                    this.phone.adjust_volume(0, Float.parseFloat(reader.readLine()));
+                    break;
+
+                case "SPEAKERS VOLUME":
+                    System.out.format("Current speakers volume: %f\nDesired volume (0-100): ", this.phone.get_speakers_volume());
+                    this.phone.adjust_volume(1, Float.parseFloat(reader.readLine()));
+                    break;
+
                 case "LOBBY":
                     this.phone.send_lobby_list_request(); 
                     break;
