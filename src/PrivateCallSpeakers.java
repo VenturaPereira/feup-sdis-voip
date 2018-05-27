@@ -31,13 +31,11 @@ public class PrivateCallSpeakers implements Runnable{
     static AudioInputStream ais;
     static AudioFormat format;
     static boolean status = true;
-    static float sampleRate = 44100.0f;
+    static float sampleRate = 8000.0f;
     private int out_device;
 
     static DataLine.Info dataLineInfo;
     static SourceDataLine sourceDataLine;
-
-    private FloatControl volume_control;
 
 
     public PrivateCallSpeakers(int out_device){
@@ -49,7 +47,9 @@ public class PrivateCallSpeakers implements Runnable{
      * 
      */
     public void set_volume(float value) {
-        this.volume_control.setValue(value);
+        FloatControl volume_control = (FloatControl) sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN); 
+        volume_control.setValue(value);
+        System.out.format("Volume set to %f/100!\n", value);
     }
     
     public void run()
@@ -72,8 +72,6 @@ public class PrivateCallSpeakers implements Runnable{
                         System.out.println("hum");
 
         sourceDataLine.start();
-
-        this.volume_control = (FloatControl) this.sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN); 
 
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
@@ -100,9 +98,7 @@ public class PrivateCallSpeakers implements Runnable{
     public static void toSpeaker(byte soundbytes[]) {
         try 
         {
-            System.out.println("At the speaker");
             sourceDataLine.write(soundbytes, 0, soundbytes.length);
-            System.out.println(soundbytes.length);
         } catch (Exception e) {
             System.out.println("Not working in speakers...");
             e.printStackTrace();

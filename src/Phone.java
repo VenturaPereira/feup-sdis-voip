@@ -122,8 +122,8 @@ public class Phone implements Runnable {
      * 
      */
     public void adjust_volume(int device_type, float value) {
-        if (device_type == 0) this.curr_mic.set_volume(value / 100); 
-        else this.curr_speakers.set_volume(value / 100);
+        if (device_type == 0) this.curr_mic.set_volume(value); 
+        else this.curr_speakers.set_volume(value);
     }
 
     /**

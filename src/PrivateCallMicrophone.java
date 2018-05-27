@@ -22,7 +22,7 @@ import javax.sound.sampled.Port.Info;
 
 public class PrivateCallMicrophone implements Runnable {
     
-    private static final float SAMPLE_RATE = 44100.0f;
+    private static final float SAMPLE_RATE = 8000.0f;
     private static final int CHUNK_SIZE = 1024, SAMPLE_SIZE = 16, CHANNEL_MONO = 1, CHANNEL_STEREO = 2;
 
     private TargetDataLine microphone;
@@ -31,8 +31,6 @@ public class PrivateCallMicrophone implements Runnable {
     private InetAddress addr;
     private DatagramPacket dgp;
     private int in_device;
-
-    private FloatControl volume_control;
 
 
     /**
@@ -51,8 +49,6 @@ public class PrivateCallMicrophone implements Runnable {
         DataLine.Info out_info = new DataLine.Info(TargetDataLine.class, this.format);
         this.microphone = (TargetDataLine) mic_mixer.getLine(out_info);
         this.microphone.open(this.format);
-
-        this.volume_control = (FloatControl) this.microphone.getControl(FloatControl.Type.MASTER_GAIN); 
     }
     
     /**
@@ -89,7 +85,9 @@ public class PrivateCallMicrophone implements Runnable {
      * 
      */
     public void set_volume(float value) {
-        this.volume_control.setValue(value);
+        FloatControl volume_control = (FloatControl) microphone.getControl(FloatControl.Type.MASTER_GAIN); 
+        volume_control.setValue(value);
+        System.out.format("Volume set to %f/100!\n", value);
     }
 
     /**
