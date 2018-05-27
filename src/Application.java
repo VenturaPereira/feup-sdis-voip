@@ -38,7 +38,7 @@ public class Application {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         while (true) {
-            switch (reader.readLine()) {
+            switch (reader.readLine().toUpperCase()) {
                 
                 case "HELP":
                     show_help_menu(); 
@@ -52,6 +52,22 @@ public class Application {
                 case "SPEAKERS VOLUME":
                     System.out.format("Current speakers volume: %f\nDesired volume (0-100): ", this.phone.get_speakers_volume());
                     this.phone.adjust_volume(1, Float.parseFloat(reader.readLine()));
+                    break;
+
+                case "MUTE":
+                    this.phone.adjust_volume(0, 0f);
+                    break;
+
+                case "UNMUTE":
+                    this.phone.adjust_volume(0, 50f);
+                    break;
+
+                case "DEAFEN":
+                    this.phone.adjust_volume(1, 0f);
+                    break;
+
+                case "UNDEAFEN":
+                    this.phone.adjust_volume(1, 50f);
                     break;
 
                 case "LOBBY":

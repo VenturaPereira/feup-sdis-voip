@@ -84,9 +84,18 @@ public class PrivateCallMicrophone implements Runnable {
     /**
      * 
      */
+    public float get_volume() {
+        FloatControl volume_control = (FloatControl) microphone.getControl(FloatControl.Type.MASTER_GAIN); 
+        return volume_control.getValue();
+    }
+
+    /**
+     * 
+     */
     public void set_volume(float value) {
         FloatControl volume_control = (FloatControl) microphone.getControl(FloatControl.Type.MASTER_GAIN); 
-        volume_control.setValue(value);
+        float volume = (float)(Math.log(value / 100) / Math.log(10.0) * 20.0);
+        volume_control.setValue(volume);
         System.out.format("Volume set to %f/100!\n", value);
     }
 

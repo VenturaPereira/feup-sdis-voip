@@ -22,7 +22,6 @@ public class Phone implements Runnable {
     private DatagramSocket socket;
 
     private int in_device, out_device;
-    private float mic_volume = 0.5f, speakers_volume = 0.5f;
 
     private ArrayList<DatagramPacket> incoming_calls, ongoing_calls;
     private static ExecutorService exec;
@@ -122,6 +121,8 @@ public class Phone implements Runnable {
      * 
      */
     public void adjust_volume(int device_type, float value) {
+        if (value < 0 || value > 100) return;
+
         if (device_type == 0) this.curr_mic.set_volume(value); 
         else this.curr_speakers.set_volume(value);
     }
@@ -258,14 +259,14 @@ public class Phone implements Runnable {
      * 
      */
     public float get_mic_volume() {
-        return this.mic_volume;
+        return curr_mic.get_volume();
     }
 
     /**
      * 
      */
     public float get_speakers_volume() {
-        return this.speakers_volume;
+        return curr_speakers.get_volume();
     }
     
     /**
@@ -274,7 +275,6 @@ public class Phone implements Runnable {
      */
     @Override
     public void run() {
-        System.out.println("running thread");
         while (true) {
             DatagramPacket packet = new DatagramPacket(new byte[512], 512);
 
