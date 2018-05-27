@@ -28,7 +28,17 @@ public class Application {
      * 
      */
     public void show_help_menu() {
+        System.out.println("\nℹ️  List of commands:\n");
         System.out.println("HELP: Displays this help menu.");
+        System.out.println("CONTACTS: Displays a list of registered contacts.");
+        System.out.println("CALL <username>: Establishes a private call.");
+        System.out.println("ACCEPT <username>: Accepts the incoming call.");
+        System.out.println("REJECT <username>: Rejects the incoming call.");
+        System.out.println("LOBBIES: Displays a list of registered lobbies.");
+        System.out.println("LOBBY <CREATE|JOIN> <name>: Creates/joins a new lobby.");
+        System.out.println("[UN]MUTE: Mutes/unmutes the microphone on the ongoing call.");
+        System.out.println("[UN]DEAFEN: Silences/unsilences the speakers on the ongoing call.");
+        System.out.println("VOLUME <MIC|SPEAKERS>: Adjusts the gain of the device on the ongoing call.\n");
     }
 
     /**
@@ -44,12 +54,12 @@ public class Application {
                     show_help_menu(); 
                     break;
 
-                case "MIC VOLUME":
+                case "VOLUME MIC":
                     System.out.format("Current microphone volume: %f\nDesired volume (0-100): ", this.phone.get_mic_volume());
                     this.phone.adjust_volume(0, Float.parseFloat(reader.readLine()));
                     break;
 
-                case "SPEAKERS VOLUME":
+                case "VOLUME SPEAKERS":
                     System.out.format("Current speakers volume: %f\nDesired volume (0-100): ", this.phone.get_speakers_volume());
                     this.phone.adjust_volume(1, Float.parseFloat(reader.readLine()));
                     break;
@@ -70,7 +80,7 @@ public class Application {
                     this.phone.adjust_volume(1, 50f);
                     break;
 
-                case "LOBBY":
+                case "LOBBIES":
                     this.phone.send_lobby_list_request(); 
                     break;
 
