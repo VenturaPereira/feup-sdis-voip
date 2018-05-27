@@ -31,7 +31,7 @@ public class PrivateCallSpeakers implements Runnable{
     static AudioInputStream ais;
     static AudioFormat format;
     static boolean status = true;
-    static float sampleRate = 8000.0f;
+    static float sampleRate = 44100.0f;
     private int out_device;
 
     static DataLine.Info dataLineInfo;
@@ -60,7 +60,7 @@ public class PrivateCallSpeakers implements Runnable{
         DatagramSocket serverSocket = new DatagramSocket(Macros.COMS_PORT);
         
 
-        byte[] receiveData = new byte[1024];
+        byte[] receiveData = new byte[512];
 
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
         

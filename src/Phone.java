@@ -22,7 +22,10 @@ public class Phone implements Runnable {
     private DatagramSocket socket;
 
     private int in_device, out_device;
+<<<<<<< HEAD
     private float mic_volume = 0.5f, speakers_volume = 0.5f;
+=======
+>>>>>>> 70235c16f7824bc21a2a1372d15a6b34c98767d4
 
     private ArrayList<DatagramPacket> incoming_calls, ongoing_calls;
     private static ExecutorService exec;
@@ -77,7 +80,7 @@ public class Phone implements Runnable {
     }
 
     /**
-     * 
+     *
      */
     public void join_lobby_request(String lobby_name) throws IOException {
         String message = String.format("LOBBYJOIN %s", lobby_name);
@@ -85,14 +88,14 @@ public class Phone implements Runnable {
     }
 
     /**
-     * 
+     *
      */
     public void send_contact_list_request() throws IOException {
         this.send("CONTACTS", this.proxy_addr, Macros.PROXY_PORT);
     }
 
     /**
-     * 
+     *
      */
     public void send_lobby_list_request() throws IOException {
         this.send("LOBBIES", this.proxy_addr, Macros.PROXY_PORT);
@@ -103,7 +106,7 @@ public class Phone implements Runnable {
      */
     public void accept_received_call(String username) throws IOException {
         Optional<DatagramPacket> match = this.incoming_calls.stream().filter(x -> Message.get_info(x.getData(), SPEAKER_INDEX).equals(username)).findFirst();
-        
+
         if (match.isPresent()) {
             String message = String.format("ACCEPT %s", this.username);
             this.send(message, match.get().getAddress(), match.get().getPort());
@@ -132,14 +135,14 @@ public class Phone implements Runnable {
      */
     public void reject_received_call(String username) throws IOException {
         Optional<DatagramPacket> match = this.incoming_calls.stream().filter(x -> Message.get_info(x.getData(), SPEAKER_INDEX).equals(username)).findFirst();
-        
+
         if (match.isPresent()) {
             String message = String.format("REJECT %s", this.username);
             this.send(message, match.get().getAddress(), match.get().getPort());
 
             this.incoming_calls.remove(match.get());    // Rejects incoming call.
             System.out.format("\n⚠️  You have rejected an incoming call from '%s'.\n\n", username);
-        } 
+        }
         else {
             System.out.println("\n⚠️  No incoming call to reject!\n\n");
         }
@@ -162,6 +165,7 @@ public class Phone implements Runnable {
 
     public void thread_iniciator(int mode, int in_device, int out_device, InetAddress addr, int port){
             if(mode == 1){
+<<<<<<< HEAD
              //   Thread call_mic = new Thread(new PrivateCallMicrophone(in_device, addr));
                // Thread call_speakers = new Thread(new PrivateCallSpeakers(out_device));
               //  call_mic.start();
@@ -172,15 +176,15 @@ public class Phone implements Runnable {
                 this.curr_speakers = new PrivateCallSpeakers(out_device);
                 exec.execute(this.curr_speakers);
 
+=======
+                exec.execute(new PrivateCallMicrophone(in_device,addr));
+                exec.execute(new PrivateCallSpeakers(out_device));
+>>>>>>> 70235c16f7824bc21a2a1372d15a6b34c98767d4
             }else if(mode == 0){
-                //Thread lobby_mic = new Thread(new LobbyMicrophone(in_device, addr, port));
-              //  Thread lobby_speakers = new Thread(new LobbySpeakers(out_device, port, addr));
-               // lobby_mic.start();
-                //lobby_speakers.start();
                 exec.execute(new LobbyMicrophone(in_device,addr,port));
                 exec.execute(new LobbySpeakers(out_device,port,addr));
             }
-        
+
     }
 
     /**
@@ -188,7 +192,7 @@ public class Phone implements Runnable {
      * @param message   The datagram packet received from either other phone/server.
      */
     public void message_monitor(DatagramPacket message) throws IOException {
-        
+
         switch (Message.get_type(message.getData())) {
 
             // Triggered when the callee accepts your ongoing call.
@@ -220,13 +224,14 @@ public class Phone implements Runnable {
             case SLOBBYOK:
                 System.out.println("Lobby created.");
                 break;
-            
+
             case SOK:
                 System.out.println("\n✅  Proxy successfully stored this phone's IP address!\n   You may now establish voice calls.\n");
                 break;
 
             case SINVITE:
                 String[] callee_info = Message.get_callee_info(message.getData());
+                System.out.println("in sinvite: " + InetAddress.getByName(callee_info[1]));
                 this.send("INVITE " + this.username, InetAddress.getByName(callee_info[1]), Integer.parseInt(callee_info[2].trim()));
                 break;
 
@@ -236,7 +241,7 @@ public class Phone implements Runnable {
             case INVITE:
                 String caller = Message.get_info(message.getData(), SPEAKER_INDEX);
                 this.send("RINGING " + this.username, message.getAddress(), message.getPort());
-                
+
                 this.incoming_calls.add(message); // Adds an incoming call.
                 System.out.format("\n📞  Incoming call from '%s'!\n\n", caller);
                 break;
@@ -248,15 +253,16 @@ public class Phone implements Runnable {
 
             case OK:
                 System.out.println("Call accepted!");
-              
+
                 this.thread_iniciator(1, in_device, out_device, message.getAddress(),0);
                 break;
-        
+
             default:
                 break;
         }
     }
 
+<<<<<<< HEAD
     /**
      * 
      */
@@ -271,13 +277,15 @@ public class Phone implements Runnable {
         return this.speakers_volume;
     }
     
+=======
+>>>>>>> 70235c16f7824bc21a2a1372d15a6b34c98767d4
     /**
      * An endless loop which continuously listens for received packets on the socket.
      * A received packet is then transferred to a monitor function which handles it according to its type.
      */
     @Override
-    public void run() {  
-        System.out.println("running thread");      
+    public void run() {
+        System.out.println("running thread");
         while (true) {
             DatagramPacket packet = new DatagramPacket(new byte[512], 512);
 
