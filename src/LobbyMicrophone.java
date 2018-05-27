@@ -70,7 +70,7 @@ public class LobbyMicrophone implements Runnable{
         this.microphone.start();  // Begin audio capture.
         //String testing = "c\n";
         while (true) {
-            int bytes_read = this.microphone.read(data, 0, 1024);
+            int bytes_read = this.microphone.read(data, 0, 2048);
 
 
             dgp = new DatagramPacket(data, data.length, InetAddress.getByName("225.0.0.3"), this.port);

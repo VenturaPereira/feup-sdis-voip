@@ -22,9 +22,10 @@ public class SpeakersWriter implements Runnable{
 
           try
           {
-
+              System.out.println(this.target.isRunning());
+              System.out.println(this.target.getLevel());
               this.target.write(this.to_write, 0, this.to_write.length);
-              this.target.drain();
+              this.target.flush();
             //  this.target.close();
 
           } catch (Exception e) {

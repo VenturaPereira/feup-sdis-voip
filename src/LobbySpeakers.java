@@ -67,23 +67,24 @@ public class LobbySpeakers implements Runnable{
     }
 
     public void speakers_listen() throws LineUnavailableException, IOException{
-        byte[] receiveData = new byte[1024];
+        byte[] receiveData = new byte[2048];
         try(MulticastSocket serverSocket = new MulticastSocket(this.port)){
 
             sourceDataLine.start();
+        
             serverSocket.joinGroup(InetAddress.getByName("225.0.0.3"));
             while (true)
             {
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
                 serverSocket.receive(receivePacket);
-                System.out.println("packet: |" + receivePacket.getAddress().toString().replace("/","").trim() + "|");
-                System.out.println("ip4: |" + InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim() + "|");
+
+
                 byte[] toSend = Arrays.copyOfRange(receiveData, 0, receivePacket.getLength());
 
 
                 if(!receivePacket.getAddress().toString().replace("/","").trim().equals(InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim())){
-                  System.out.println("lol");
+
                   exec.execute(new SpeakersWriter(toSend,sourceDataLine));
                 }
 
