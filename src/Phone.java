@@ -22,10 +22,7 @@ public class Phone implements Runnable {
     private DatagramSocket socket;
 
     private int in_device, out_device;
-<<<<<<< HEAD
     private float mic_volume = 0.5f, speakers_volume = 0.5f;
-=======
->>>>>>> 70235c16f7824bc21a2a1372d15a6b34c98767d4
 
     private ArrayList<DatagramPacket> incoming_calls, ongoing_calls;
     private static ExecutorService exec;
@@ -164,8 +161,7 @@ public class Phone implements Runnable {
 
 
     public void thread_iniciator(int mode, int in_device, int out_device, InetAddress addr, int port){
-            if(mode == 1){
-<<<<<<< HEAD
+            if(mode == 1) {
              //   Thread call_mic = new Thread(new PrivateCallMicrophone(in_device, addr));
                // Thread call_speakers = new Thread(new PrivateCallSpeakers(out_device));
               //  call_mic.start();
@@ -176,10 +172,6 @@ public class Phone implements Runnable {
                 this.curr_speakers = new PrivateCallSpeakers(out_device);
                 exec.execute(this.curr_speakers);
 
-=======
-                exec.execute(new PrivateCallMicrophone(in_device,addr));
-                exec.execute(new PrivateCallSpeakers(out_device));
->>>>>>> 70235c16f7824bc21a2a1372d15a6b34c98767d4
             }else if(mode == 0){
                 exec.execute(new LobbyMicrophone(in_device,addr,port));
                 exec.execute(new LobbySpeakers(out_device,port,addr));
@@ -262,7 +254,6 @@ public class Phone implements Runnable {
         }
     }
 
-<<<<<<< HEAD
     /**
      * 
      */
@@ -277,8 +268,6 @@ public class Phone implements Runnable {
         return this.speakers_volume;
     }
     
-=======
->>>>>>> 70235c16f7824bc21a2a1372d15a6b34c98767d4
     /**
      * An endless loop which continuously listens for received packets on the socket.
      * A received packet is then transferred to a monitor function which handles it according to its type.
