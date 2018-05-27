@@ -75,18 +75,17 @@ public class LobbySpeakers implements Runnable{
             while (true)
             {
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-                  ByteArrayInputStream baiss = new ByteArrayInputStream(receivePacket.getData());
 
                 serverSocket.receive(receivePacket);
-              //  String receiving = new String(receivePacket.getData(), 0, receivePacket.getData().length);
-            //    System.out.println(receiving);
-                  ais = new AudioInputStream(baiss, format, receivePacket.getLength());
-                  byte[] toSend = Arrays.copyOfRange(receiveData, 0, receivePacket.getLength());
+                System.out.println("packet: " + receivePacket.getAddress());
+                System.out.println("ip4: " + InetAddress.getLocalHost().getHostAddress());
+                byte[] toSend = Arrays.copyOfRange(receiveData, 0, receivePacket.getLength());
 
 
-
+                if(receivePacket.getAddress().toString() != InetAddress.getLocalHost().getHostAddress().toString()){
+                  System.out.println("lol");
                   exec.execute(new SpeakersWriter(toSend,sourceDataLine));
-
+                }
 
             }
 

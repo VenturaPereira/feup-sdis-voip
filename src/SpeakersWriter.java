@@ -25,7 +25,7 @@ public class SpeakersWriter implements Runnable{
 
               this.target.write(this.to_write, 0, this.to_write.length);
               this.target.drain();
-              this.target.close();
+            //  this.target.close();
 
           } catch (Exception e) {
               System.out.println("Not working in speakers...");
