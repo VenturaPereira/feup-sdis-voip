@@ -36,8 +36,11 @@ public class MiguelpoCrl implements Runnable{
 
 
 
+
         private DatagramPacket packet;
+
         private Queue<DatagramPacket> queue;
+
 
 
 
@@ -47,16 +50,20 @@ public class MiguelpoCrl implements Runnable{
             this.packet = packet;
 
 
+
         }
 
 
         public void run(){
               try{
+
                 System.out.println("new thread");
 
               if(!this.packet.getAddress().toString().replace("/","").trim().equals(InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim())){
                 queue.add(packet);
                 System.out.println("Added");
+
+
               }
 
             }catch(Exception e){

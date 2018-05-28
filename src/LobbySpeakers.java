@@ -74,6 +74,7 @@ public class LobbySpeakers implements Runnable{
 
             serverSocket.joinGroup(InetAddress.getByName("225.0.0.3"));
             Thread t = new Thread(new SpeakersWriter(sourceDataLine, queue));
+
             t.start();
 
             while (true)
@@ -91,31 +92,15 @@ public class LobbySpeakers implements Runnable{
                 }catch(Exception e){
                   e.printStackTrace();
                 }
-
-              }catch(Exception e){
-                e.printStackTrace();
-              }
-
-                //serverSocket.receive(receivePacket);
-
-
-              //  byte[] toSend = Arrays.copyOfRange(receiveData, 0, receivePacket.getLength());
-
-
-                //if(!receivePacket.getAddress().toString().replace("/","").trim().equals(InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim())){
-
-                //  exec.execute(new SpeakersWriter(toSend,sourceDataLine));
-                //}
-
+            }catch(Exception e){
+              e.printStackTrace();
             }
 
 
-          }catch(IOException e){
-                e.printStackTrace();
-        }
+          }
+}
 
-
-    }
+  }
 
 
 
