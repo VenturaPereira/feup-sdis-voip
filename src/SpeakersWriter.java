@@ -4,17 +4,20 @@ import javax.sound.sampled.LineUnavailableException;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import java.net.DatagramPacket;
+import java.util.*;
 
 
 public class SpeakersWriter implements Runnable{
 
-        private byte[] to_write;
         private SourceDataLine target;
+        private Queue<DatagramPacket> queue;
 
-        public SpeakersWriter(byte[] info, SourceDataLine target){
-          this.to_write = info;
+        public SpeakersWriter(SourceDataLine target, Queue<DatagramPacket> queue){
           this.target = target;
+          this.queue = queue;
         }
 
 
@@ -22,11 +25,14 @@ public class SpeakersWriter implements Runnable{
 
           try
           {
-              System.out.println(this.target.isRunning());
-              System.out.println(this.target.getLevel());
-              this.target.write(this.to_write, 0, this.to_write.length);
-              this.target.flush();
-            //  this.target.close();
+              while (true) {
+                DatagramPacket packet = queue.poll();
+		if (packet == null) continue;
+                this.target.write(packet.getData(), 0, packet.getData().length);
+
+              }
+
+
 
           } catch (Exception e) {
               System.out.println("Not working in speakers...");

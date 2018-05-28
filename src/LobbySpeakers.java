@@ -3,7 +3,7 @@ import java.io.ByteArrayInputStream;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.net.InetAddress;
-
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -20,7 +20,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 import java.io.IOException;
 
-
+import java.util.*;
 
 import java.util.Arrays;
 
@@ -67,26 +67,34 @@ public class LobbySpeakers implements Runnable{
     }
 
     public void speakers_listen() throws LineUnavailableException, IOException{
-        byte[] receiveData = new byte[2048];
-        try(MulticastSocket serverSocket = new MulticastSocket(this.port)){
 
+        try(MulticastSocket serverSocket = new MulticastSocket(this.port)){
+            Queue<DatagramPacket> queue = new ConcurrentLinkedQueue<DatagramPacket>();
             sourceDataLine.start();
-        
+
             serverSocket.joinGroup(InetAddress.getByName("225.0.0.3"));
+            Thread t = new Thread(new SpeakersWriter(sourceDataLine, queue));
+		t.start();
             while (true)
             {
-                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-
-                serverSocket.receive(receivePacket);
 
 
-                byte[] toSend = Arrays.copyOfRange(receiveData, 0, receivePacket.getLength());
+              exec.execute(new MiguelpoCrl(serverSocket, queue));
+		try {Thread.sleep(5);}catch(Exception e) {}
+                //DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
 
-                if(!receivePacket.getAddress().toString().replace("/","").trim().equals(InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim())){
 
-                  exec.execute(new SpeakersWriter(toSend,sourceDataLine));
-                }
+                //serverSocket.receive(receivePacket);
+
+
+              //  byte[] toSend = Arrays.copyOfRange(receiveData, 0, receivePacket.getLength());
+
+
+                //if(!receivePacket.getAddress().toString().replace("/","").trim().equals(InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim())){
+
+                //  exec.execute(new SpeakersWriter(toSend,sourceDataLine));
+                //}
 
             }
 
