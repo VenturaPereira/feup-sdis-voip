@@ -27,10 +27,10 @@ public class SpeakersWriter implements Runnable{
           {
               while (true) {
                 DatagramPacket packet = queue.poll();
-
-		if (packet == null) continue;
+              //  DatagramPacket packetTwo = queue.poll();
+                //this.target.write(packet, 0, packet.length);
+              if(packet == null) continue;
                 this.target.write(packet.getData(), 0, packet.getData().length);
-
 
               }
 

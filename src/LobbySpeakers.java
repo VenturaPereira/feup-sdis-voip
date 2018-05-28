@@ -81,10 +81,10 @@ public class LobbySpeakers implements Runnable{
             {
 
                 try{
-              byte[] receiveData = new byte[3072];
+              byte[] receiveData = new byte[4096];
               DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
               serverSocket.receive(receivePacket);
-                Thread r = new Thread(new MiguelpoCrl(receivePacket, queue));
+                Thread r = new Thread(new PacketQueue(receivePacket, queue));
                 r.start();
                 //DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 try{

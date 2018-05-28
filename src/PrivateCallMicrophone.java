@@ -21,8 +21,8 @@ import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.Port.Info;
 
 public class PrivateCallMicrophone implements Runnable {
-    
-    private static final float SAMPLE_RATE = 8000.0f;
+
+    private static final float SAMPLE_RATE = 44100.0f;
     private static final int CHUNK_SIZE = 1024, SAMPLE_SIZE = 16, CHANNEL_MONO = 1, CHANNEL_STEREO = 2;
 
     private TargetDataLine microphone;
@@ -50,57 +50,57 @@ public class PrivateCallMicrophone implements Runnable {
         this.microphone = (TargetDataLine) mic_mixer.getLine(out_info);
         this.microphone.open(this.format);
     }
-    
+
     /**
-     * 
+     *
      */
     public void rec_mic_line() throws IOException {
        try{
-      
+
         byte[] data = new byte[this.microphone.getBufferSize() / 5];
         DatagramSocket socket = new DatagramSocket();
         this.microphone.start();  // Begin audio capture.
 
         while (true) {
-            int bytes_read = this.microphone.read(data, 0, 512);
+            int bytes_read = this.microphone.read(data, 0, 4096);
 
-            
+
             dgp = new DatagramPacket(data, data.length,this.addr, Macros.COMS_PORT);
             socket.send(dgp);
-           
+
         }
-       
-       
+
+
         }catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (SocketException e) {
             e.printStackTrace();
 
         } catch (IOException e2) {
-  
+
         }
     }
 
     /**
-     * 
+     *
      */
     public float get_volume() {
-        FloatControl volume_control = (FloatControl) microphone.getControl(FloatControl.Type.MASTER_GAIN); 
+        FloatControl volume_control = (FloatControl) microphone.getControl(FloatControl.Type.MASTER_GAIN);
         return volume_control.getValue();
     }
 
     /**
-     * 
+     *
      */
     public void set_volume(float value) {
-        FloatControl volume_control = (FloatControl) microphone.getControl(FloatControl.Type.MASTER_GAIN); 
+        FloatControl volume_control = (FloatControl) microphone.getControl(FloatControl.Type.MASTER_GAIN);
         float volume = (float)(Math.log(value / 100) / Math.log(10.0) * 20.0);
         volume_control.setValue(volume);
         System.out.format("Volume set to %f/100!\n", value);
     }
 
     /**
-     * 
+     *
      */
     public static void display_devices(Class<?> line_type) throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
@@ -122,19 +122,19 @@ public class PrivateCallMicrophone implements Runnable {
 
 
     /**
-     * 
+     *
      */
     public Mixer select_mic_device() throws LineUnavailableException {
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
         return AudioSystem.getMixer(mixer_info[this.in_device]);
     }
 
-  
+
 
     public void run() {
-          
+
         try {
-            
+
             Mixer mic_mixer = this.select_mic_device();
            // Mixer speaker_mixer = voice.select_speaker_device();
 

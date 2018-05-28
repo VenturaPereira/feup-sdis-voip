@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 
-public class MiguelpoCrl implements Runnable{
+public class PacketQueue implements Runnable{
 
 
 
@@ -45,7 +45,7 @@ public class MiguelpoCrl implements Runnable{
 
 
 
-        public MiguelpoCrl( DatagramPacket packet, Queue<DatagramPacket> queue){
+        public PacketQueue( DatagramPacket packet, Queue<DatagramPacket> queue){
             this.queue = queue;
             this.packet = packet;
 
@@ -57,11 +57,11 @@ public class MiguelpoCrl implements Runnable{
         public void run(){
               try{
 
-                System.out.println("new thread");
+              //  System.out.println("new thread");
 
               if(!this.packet.getAddress().toString().replace("/","").trim().equals(InetAddress.getLocalHost().getHostAddress().toString().replace("/","").trim())){
                 queue.add(packet);
-                System.out.println("Added");
+              //  System.out.println("Added");
 
 
               }

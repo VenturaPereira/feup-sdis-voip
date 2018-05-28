@@ -31,7 +31,7 @@ public class PrivateCallSpeakers implements Runnable{
     static AudioInputStream ais;
     static AudioFormat format;
     static boolean status = true;
-    static float sampleRate = 8000.0f;
+    static float sampleRate = 44100.0f;
     private int out_device;
 
     static DataLine.Info dataLineInfo;
@@ -44,15 +44,15 @@ public class PrivateCallSpeakers implements Runnable{
     }
 
     /**
-     * 
+     *
      */
     public float get_volume() {
-        FloatControl volume_control = (FloatControl) sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN); 
+        FloatControl volume_control = (FloatControl) sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
         return volume_control.getValue();
     }
 
     /**
-     * 
+     *
      */
     public void set_volume(float value) {
         FloatControl volume_control = (FloatControl) sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
@@ -60,19 +60,19 @@ public class PrivateCallSpeakers implements Runnable{
         volume_control.setValue(volume);
         System.out.format("Volume set to %f/100!\n", value);
     }
-    
+
     public void run()
     {
         try{
         System.out.println("Server started at port:" + Macros.COMS_PORT);
-        try{    
+        try{
         DatagramSocket serverSocket = new DatagramSocket(Macros.COMS_PORT);
-        
 
-        byte[] receiveData = new byte[512];
+
+        byte[] receiveData = new byte[4096];
 
         Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
-        
+
         dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
 
         Mixer mixer = AudioSystem.getMixer(mixer_info[this.out_device]);
@@ -86,7 +86,7 @@ public class PrivateCallSpeakers implements Runnable{
 
         ByteArrayInputStream baiss = new ByteArrayInputStream(receivePacket.getData());
 
-        while (status == true) 
+        while (status == true)
         {
             serverSocket.receive(receivePacket);
             ais = new AudioInputStream(baiss, format, receivePacket.getLength());
@@ -105,7 +105,7 @@ public class PrivateCallSpeakers implements Runnable{
     }
 
     public static void toSpeaker(byte soundbytes[]) {
-        try 
+        try
         {
             sourceDataLine.write(soundbytes, 0, soundbytes.length);
         } catch (Exception e) {
